@@ -62,7 +62,15 @@
         "location": "स्थान",
         "upvotes": "अपवोट",
         "date": "तारीख",
-        "actions": "कार्यवाही"
+        "actions": "कार्यवाही",
+        "updateStatus": "Update Status",
+        "setPriority": "Set Priority",
+        "priority": {
+            "urgent": "Urgent",
+            "high": "High",
+            "normal": "Normal",
+            "low": "Low"
+        }
     },
     "analytics": {
         "title": "विश्लेषण डैशबोर्ड",
