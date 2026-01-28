@@ -4,15 +4,13 @@ import { Header } from "@/components/ui/header";
 import { useAuth } from "@/lib/auth-context";
 import {
     Trophy, Star, Zap, Shield, Award,
-    TrendingUp, Camera, CheckCircle, Target, Crown
+    TrendingUp, Camera, CheckCircle, Crown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Gamification data (mock)
 const userStats = {
     xp: 1250,
     level: 5,
-    nextLevelXp: 2000,
     reports: 23,
     resolved: 18,
     upvotes: 156,
@@ -25,7 +23,7 @@ const badges = [
     { id: "ten_reports", name: "Guardian", icon: Shield, earned: true, description: "Submit 10 reports" },
     { id: "twenty_five", name: "Champion", icon: Trophy, earned: false, description: "Submit 25 reports" },
     { id: "fifty_upvotes", name: "Influencer", icon: TrendingUp, earned: true, description: "Get 50 upvotes" },
-    { id: "resolved", name: "Problem Solver", icon: CheckCircle, earned: true, description: "Get 5 resolved" },
+    { id: "resolved", name: "Solver", icon: CheckCircle, earned: true, description: "Get 5 resolved" },
 ];
 
 const levels = [
@@ -40,11 +38,11 @@ const levels = [
 ];
 
 const leaderboard = [
-    { rank: 1, name: "Rahul S.", xp: 5420, avatar: "RS" },
-    { rank: 2, name: "Priya M.", xp: 4830, avatar: "PM" },
-    { rank: 3, name: "Amit K.", xp: 4210, avatar: "AK" },
-    { rank: 4, name: "Sneha R.", xp: 3890, avatar: "SR" },
-    { rank: 5, name: "Vikram P.", xp: 3540, avatar: "VP" },
+    { rank: 1, name: "Rahul S.", xp: 5420, initials: "RS" },
+    { rank: 2, name: "Priya M.", xp: 4830, initials: "PM" },
+    { rank: 3, name: "Amit K.", xp: 4210, initials: "AK" },
+    { rank: 4, name: "Sneha R.", xp: 3890, initials: "SR" },
+    { rank: 5, name: "Vikram P.", xp: 3540, initials: "VP" },
 ];
 
 export default function ProfilePage() {
@@ -57,41 +55,48 @@ export default function ProfilePage() {
         <div className="min-h-screen bg-[var(--bg-deep)]">
             <Header />
 
-            <main className="pt-24 pb-8 px-4">
+            <main className="pt-[5.5rem] pb-8 px-4">
                 <div className="max-w-4xl mx-auto">
 
                     {/* Profile Header */}
-                    <div className="glass-card-static p-6 mb-6">
-                        <div className="flex flex-col md:flex-row items-center gap-6">
+                    <section className="glass-card-static p-5 mb-5" aria-labelledby="profile-heading">
+                        <div className="flex flex-col md:flex-row items-center gap-5">
                             {/* Avatar */}
-                            <div className="relative">
-                                <div className="w-24 h-24 rounded-2xl bg-[var(--gradient-brand)] flex items-center justify-center text-3xl font-bold text-white shadow-xl brand-glow">
+                            <div className="relative" aria-hidden="true">
+                                <div className="w-20 h-20 rounded-xl bg-[var(--gradient-brand)] flex items-center justify-center text-2xl font-bold text-white shadow-lg">
                                     {user?.phone?.slice(-2) || "DH"}
                                 </div>
-                                <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-[var(--brand)] flex items-center justify-center text-white text-sm font-bold shadow-lg">
+                                <div className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-md bg-[var(--brand)] flex items-center justify-center text-white text-xs font-bold">
                                     {currentLevel.level}
                                 </div>
                             </div>
 
                             {/* Info */}
                             <div className="flex-1 text-center md:text-left">
-                                <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">
+                                <h1 id="profile-heading" className="text-xl font-semibold text-[var(--text-primary)] mb-0.5">
                                     {user?.phone || "Anonymous Hero"}
                                 </h1>
-                                <p className="text-[var(--text-muted)] mb-4">
+                                <p className="text-sm text-[var(--text-muted)] mb-3">
                                     {currentLevel.name} · Rank #{userStats.rank}
                                 </p>
 
                                 {/* XP Progress */}
-                                <div className="max-w-md">
-                                    <div className="flex items-center justify-between text-sm mb-2">
-                                        <span className="font-medium text-[var(--text-primary)]">
-                                            <Zap className="w-4 h-4 inline text-[var(--brand-light)] mr-1" />
-                                            {userStats.xp.toLocaleString()} XP
+                                <div className="max-w-sm">
+                                    <div className="flex items-center justify-between text-xs mb-1.5">
+                                        <span className="font-medium text-[var(--text-primary)] flex items-center gap-1">
+                                            <Zap className="w-3.5 h-3.5 text-[var(--info)]" aria-hidden="true" />
+                                            <span className="font-mono">{userStats.xp.toLocaleString()}</span> XP
                                         </span>
-                                        <span className="text-[var(--text-muted)]">{nextLevel.minXp.toLocaleString()} XP</span>
+                                        <span className="text-[var(--text-subtle)] font-mono">{nextLevel.minXp.toLocaleString()} XP</span>
                                     </div>
-                                    <div className="h-3 bg-[var(--bg-surface)] rounded-full overflow-hidden">
+                                    <div
+                                        className="h-2.5 bg-[var(--bg-surface)] rounded-full overflow-hidden"
+                                        role="progressbar"
+                                        aria-valuenow={userStats.xp}
+                                        aria-valuemin={currentLevel.minXp}
+                                        aria-valuemax={nextLevel.minXp}
+                                        aria-label="Experience points progress"
+                                    >
                                         <div
                                             className="h-full rounded-full transition-all duration-700"
                                             style={{
@@ -100,116 +105,118 @@ export default function ProfilePage() {
                                             }}
                                         />
                                     </div>
-                                    <p className="text-xs text-[var(--text-subtle)] mt-2">
-                                        {(nextLevel.minXp - userStats.xp).toLocaleString()} XP to {nextLevel.name}
+                                    <p className="text-[10px] text-[var(--text-subtle)] mt-1.5">
+                                        <span className="font-mono">{(nextLevel.minXp - userStats.xp).toLocaleString()}</span> XP to {nextLevel.name}
                                     </p>
                                 </div>
                             </div>
 
-                            {/* Quick Stats */}
-                            <div className="flex gap-6 text-center">
+                            {/* Stats */}
+                            <div className="flex gap-5 text-center" role="group" aria-label="User statistics">
                                 <div>
-                                    <div className="text-2xl font-bold gradient-text">{userStats.reports}</div>
-                                    <div className="text-xs text-[var(--text-muted)]">Reports</div>
+                                    <div className="text-xl font-semibold font-mono gradient-text">{userStats.reports}</div>
+                                    <div className="text-[10px] text-[var(--text-subtle)]">Reports</div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl font-bold text-[var(--success)]">{userStats.resolved}</div>
-                                    <div className="text-xs text-[var(--text-muted)]">Resolved</div>
+                                    <div className="text-xl font-semibold font-mono text-[var(--success)]">{userStats.resolved}</div>
+                                    <div className="text-[10px] text-[var(--text-subtle)]">Resolved</div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl font-bold text-[var(--warning)]">{userStats.upvotes}</div>
-                                    <div className="text-xs text-[var(--text-muted)]">Upvotes</div>
+                                    <div className="text-xl font-semibold font-mono text-[var(--warning)]">{userStats.upvotes}</div>
+                                    <div className="text-[10px] text-[var(--text-subtle)]">Upvotes</div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
                     {/* Badges */}
-                    <div className="glass-card-static p-6 mb-6">
-                        <div className="flex items-center gap-2 mb-5">
-                            <div className="w-8 h-8 rounded-lg bg-[var(--brand)]/10 flex items-center justify-center">
-                                <Award className="w-4 h-4 text-[var(--brand-light)]" />
+                    <section className="glass-card-static p-5 mb-5" aria-labelledby="badges-heading">
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="w-7 h-7 rounded-md bg-[var(--info-bg)] flex items-center justify-center">
+                                <Award className="w-3.5 h-3.5 text-[var(--info)]" aria-hidden="true" />
                             </div>
-                            <h2 className="font-semibold text-[var(--text-primary)]">Badges</h2>
+                            <h2 id="badges-heading" className="font-medium text-sm text-[var(--text-primary)]">Badges</h2>
                         </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2" role="list" aria-label="Earned badges">
                             {badges.map(badge => (
                                 <div
                                     key={badge.id}
                                     className={cn(
-                                        "p-4 rounded-xl border transition-all cursor-default",
+                                        "p-3 rounded-lg border transition-all",
                                         badge.earned
-                                            ? "bg-[var(--brand)]/5 border-[var(--brand)]/20 hover-lift"
+                                            ? "bg-[var(--info-bg)] border-[rgba(59,130,246,0.2)]"
                                             : "bg-[var(--bg-surface)] border-[var(--glass-border)] opacity-50"
                                     )}
+                                    role="listitem"
+                                    aria-label={`${badge.name}: ${badge.description}${badge.earned ? " - Earned" : " - Not earned"}`}
                                 >
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-2.5">
                                         <div className={cn(
-                                            "w-10 h-10 rounded-xl flex items-center justify-center",
+                                            "w-9 h-9 rounded-lg flex items-center justify-center",
                                             badge.earned ? "bg-[var(--brand)]/10" : "bg-[var(--bg-elevated)]"
                                         )}>
                                             <badge.icon className={cn(
-                                                "w-5 h-5",
-                                                badge.earned ? "text-[var(--brand-light)]" : "text-[var(--text-subtle)]"
-                                            )} />
+                                                "w-4 h-4",
+                                                badge.earned ? "text-[var(--info)]" : "text-[var(--text-subtle)]"
+                                            )} aria-hidden="true" />
                                         </div>
                                         <div>
                                             <div className={cn(
-                                                "font-medium text-sm",
+                                                "font-medium text-xs",
                                                 badge.earned ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"
                                             )}>
                                                 {badge.name}
                                             </div>
-                                            <div className="text-xs text-[var(--text-subtle)]">{badge.description}</div>
+                                            <div className="text-[10px] text-[var(--text-subtle)]">{badge.description}</div>
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </section>
 
                     {/* Leaderboard */}
-                    <div className="glass-card-static p-6">
-                        <div className="flex items-center gap-2 mb-5">
-                            <div className="w-8 h-8 rounded-lg bg-[var(--warning)]/10 flex items-center justify-center">
-                                <Trophy className="w-4 h-4 text-[var(--warning)]" />
+                    <section className="glass-card-static p-5" aria-labelledby="leaderboard-heading">
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="w-7 h-7 rounded-md bg-[var(--warning-bg)] flex items-center justify-center">
+                                <Trophy className="w-3.5 h-3.5 text-[var(--warning)]" aria-hidden="true" />
                             </div>
-                            <h2 className="font-semibold text-[var(--text-primary)]">Leaderboard</h2>
+                            <h2 id="leaderboard-heading" className="font-medium text-sm text-[var(--text-primary)]">Leaderboard</h2>
                         </div>
 
-                        <div className="space-y-2">
+                        <ol className="space-y-2" aria-label="Top users by XP">
                             {leaderboard.map((user, index) => (
-                                <div
+                                <li
                                     key={user.rank}
                                     className={cn(
-                                        "flex items-center gap-4 p-3 rounded-xl transition-colors cursor-default",
-                                        index < 3 ? "bg-[var(--warning)]/5" : "hover:bg-[var(--bg-hover)]"
+                                        "flex items-center gap-3 p-2.5 rounded-lg transition-colors",
+                                        index < 3 ? "bg-[var(--warning-bg)]" : "hover:bg-[var(--bg-hover)]"
                                     )}
                                 >
                                     <div className={cn(
-                                        "w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm",
+                                        "w-7 h-7 rounded-md flex items-center justify-center font-semibold text-xs",
                                         index === 0 && "bg-[var(--warning)] text-black",
                                         index === 1 && "bg-gray-400 text-white",
                                         index === 2 && "bg-amber-700 text-white",
                                         index > 2 && "bg-[var(--bg-surface)] text-[var(--text-muted)]"
                                     )}>
-                                        {index === 0 ? <Crown className="w-4 h-4" /> : user.rank}
+                                        {index === 0 ? <Crown className="w-3.5 h-3.5" aria-hidden="true" /> : user.rank}
                                     </div>
-                                    <div className="w-10 h-10 rounded-xl bg-[var(--gradient-brand)] flex items-center justify-center text-white text-sm font-bold">
-                                        {user.avatar}
+                                    <div className="w-9 h-9 rounded-lg bg-[var(--gradient-brand)] flex items-center justify-center text-white text-xs font-semibold" aria-hidden="true">
+                                        {user.initials}
                                     </div>
                                     <div className="flex-1">
-                                        <div className="font-medium text-[var(--text-primary)]">{user.name}</div>
+                                        <div className="font-medium text-sm text-[var(--text-primary)]">{user.name}</div>
                                     </div>
-                                    <div className="font-bold text-[var(--brand-light)]">
-                                        <Zap className="w-3.5 h-3.5 inline mr-1" />
+                                    <div className="font-semibold text-sm font-mono text-[var(--info)] flex items-center gap-1">
+                                        <Zap className="w-3 h-3" aria-hidden="true" />
                                         {user.xp.toLocaleString()}
                                     </div>
-                                </div>
+                                </li>
                             ))}
-                        </div>
-                    </div>
+                        </ol>
+                    </section>
                 </div>
             </main>
         </div>

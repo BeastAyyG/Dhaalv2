@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useTheme } from "@/lib/theme-context";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n";
-import { Sun, Moon, LogIn, LogOut, Shield, BarChart3, Menu, Globe, Zap, User } from "lucide-react";
+import { Sun, Moon, LogIn, LogOut, Shield, BarChart3, Menu, Globe, Zap, User, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -14,69 +14,73 @@ export function Header() {
     const { language, setLanguage } = useI18n();
     const [menuOpen, setMenuOpen] = useState(false);
 
+    const navLinks = [
+        { href: "/", label: "Feed" },
+        { href: "/analytics", label: "Analytics", icon: BarChart3 },
+        { href: "/officer", label: "Officer" },
+        { href: "/profile", label: "Profile", icon: User },
+    ];
+
     return (
         <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
-            <div className="glass-card-static mx-auto max-w-7xl">
-                <div className="flex items-center justify-between h-16 px-4">
+            <nav className="glass-card-static mx-auto max-w-7xl" role="navigation" aria-label="Main navigation">
+                <div className="flex items-center justify-between h-14 px-2">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-3 group">
-                        <div className="w-10 h-10 rounded-xl bg-[var(--gradient-brand)] flex items-center justify-center shadow-lg brand-glow transition-transform group-hover:scale-105">
-                            <Shield className="w-5 h-5 text-white" />
+                    <Link
+                        href="/"
+                        className="flex items-center gap-3 group"
+                        aria-label="Dhaal - Home"
+                    >
+                        <div className="w-9 h-9 rounded-lg bg-[var(--gradient-brand)] flex items-center justify-center shadow-lg">
+                            <Shield className="w-5 h-5 text-white" aria-hidden="true" />
                         </div>
                         <div className="hidden sm:block">
-                            <span className="font-bold text-xl text-[var(--text-primary)]">Dhaal</span>
-                            <span className="block text-[10px] text-[var(--text-muted)] -mt-1">Civic Shield</span>
+                            <span className="font-semibold text-lg text-[var(--text-primary)]">Dhaal</span>
+                            <span className="block text-[10px] text-[var(--text-subtle)] -mt-0.5 font-mono">CIVIC SHIELD</span>
                         </div>
                     </Link>
 
                     {/* Desktop Nav */}
-                    <nav className="hidden md:flex items-center gap-1">
-                        <Link href="/" className="btn-ghost text-sm">
-                            Feed
-                        </Link>
-                        <Link href="/analytics" className="btn-ghost text-sm flex items-center gap-1.5">
-                            <BarChart3 className="w-4 h-4" />
-                            Analytics
-                        </Link>
-                        <Link href="/officer" className="btn-ghost text-sm">
-                            Officer Panel
-                        </Link>
-                        <Link href="/profile" className="btn-ghost text-sm flex items-center gap-1.5">
-                            <User className="w-4 h-4" />
-                            Profile
-                        </Link>
-                    </nav>
+                    <div className="hidden md:flex items-center gap-1">
+                        {navLinks.map(link => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className="btn-ghost text-sm"
+                            >
+                                {link.icon && <link.icon className="w-4 h-4" aria-hidden="true" />}
+                                {link.label}
+                            </Link>
+                        ))}
+                    </div>
 
-                    {/* Right Side */}
-                    <div className="flex items-center gap-2">
+                    {/* Right Side Controls */}
+                    <div className="flex items-center gap-1">
                         {/* XP Badge */}
-                        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--brand)]/10 border border-[var(--brand)]/20">
-                            <Zap className="w-3.5 h-3.5 text-[var(--brand-light)]" />
-                            <span className="text-xs font-bold text-[var(--brand-light)]">1,250 XP</span>
+                        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[var(--info-bg)] border border-[rgba(59,130,246,0.2)]">
+                            <Zap className="w-3.5 h-3.5 text-[var(--info)]" aria-hidden="true" />
+                            <span className="text-xs font-semibold font-mono text-[var(--info)]">1,250</span>
                         </div>
 
                         {/* Language Toggle */}
                         <button
                             onClick={() => setLanguage(language === "en" ? "hi" : "en")}
-                            className="btn-ghost flex items-center gap-1.5 text-sm"
-                            aria-label="Toggle language"
+                            className="btn-icon"
+                            aria-label={`Switch to ${language === "en" ? "Hindi" : "English"}`}
                         >
-                            <Globe className="w-4 h-4" />
-                            <span className="hidden sm:inline font-medium">
-                                {language === "en" ? "हिं" : "EN"}
-                            </span>
+                            <Globe className="w-4 h-4" aria-hidden="true" />
                         </button>
 
                         {/* Theme Toggle */}
                         <button
                             onClick={toggleTheme}
-                            className="btn-ghost"
-                            aria-label="Toggle theme"
+                            className="btn-icon"
+                            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
                         >
                             {theme === "dark" ? (
-                                <Sun className="w-5 h-5" />
+                                <Sun className="w-4.5 h-4.5" aria-hidden="true" />
                             ) : (
-                                <Moon className="w-5 h-5" />
+                                <Moon className="w-4.5 h-4.5" aria-hidden="true" />
                             )}
                         </button>
 
@@ -84,61 +88,55 @@ export function Header() {
                         {user ? (
                             <button
                                 onClick={() => signOut()}
-                                className="btn-ghost text-[var(--error)] hover:bg-[var(--error-bg)]"
+                                className="btn-icon text-[var(--error)]"
+                                aria-label="Sign out"
                             >
-                                <LogOut className="w-4 h-4" />
+                                <LogOut className="w-4 h-4" aria-hidden="true" />
                             </button>
                         ) : (
-                            <Link href="/login" className="btn-primary text-sm flex items-center gap-2">
-                                <LogIn className="w-4 h-4" />
-                                <span>Login</span>
+                            <Link href="/login" className="btn-primary text-sm py-2 px-4">
+                                <LogIn className="w-4 h-4" aria-hidden="true" />
+                                <span className="hidden sm:inline">Login</span>
                             </Link>
                         )}
 
-                        {/* Mobile Menu */}
+                        {/* Mobile Menu Toggle */}
                         <button
                             onClick={() => setMenuOpen(!menuOpen)}
-                            className="md:hidden btn-ghost"
+                            className="md:hidden btn-icon"
+                            aria-label={menuOpen ? "Close menu" : "Open menu"}
+                            aria-expanded={menuOpen}
                         >
-                            <Menu className="w-5 h-5" />
+                            {menuOpen ? (
+                                <X className="w-5 h-5" aria-hidden="true" />
+                            ) : (
+                                <Menu className="w-5 h-5" aria-hidden="true" />
+                            )}
                         </button>
                     </div>
                 </div>
 
-                {/* Mobile Menu Dropdown */}
+                {/* Mobile Menu */}
                 {menuOpen && (
-                    <div className="md:hidden border-t border-[var(--glass-border)] py-3 px-3 space-y-1 animate-fade-in">
-                        <Link
-                            href="/"
-                            className="block py-2.5 px-3 rounded-lg hover:bg-[var(--bg-hover)] transition-colors text-sm font-medium"
-                            onClick={() => setMenuOpen(false)}
-                        >
-                            Feed
-                        </Link>
-                        <Link
-                            href="/analytics"
-                            className="block py-2.5 px-3 rounded-lg hover:bg-[var(--bg-hover)] transition-colors text-sm font-medium"
-                            onClick={() => setMenuOpen(false)}
-                        >
-                            Analytics
-                        </Link>
-                        <Link
-                            href="/officer"
-                            className="block py-2.5 px-3 rounded-lg hover:bg-[var(--bg-hover)] transition-colors text-sm font-medium"
-                            onClick={() => setMenuOpen(false)}
-                        >
-                            Officer Panel
-                        </Link>
-                        <Link
-                            href="/profile"
-                            className="block py-2.5 px-3 rounded-lg hover:bg-[var(--bg-hover)] transition-colors text-sm font-medium"
-                            onClick={() => setMenuOpen(false)}
-                        >
-                            Profile
-                        </Link>
+                    <div
+                        className="md:hidden border-t border-[var(--glass-border)] py-2 animate-fade-in"
+                        role="menu"
+                    >
+                        {navLinks.map(link => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className="flex items-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-colors"
+                                onClick={() => setMenuOpen(false)}
+                                role="menuitem"
+                            >
+                                {link.icon && <link.icon className="w-4 h-4" aria-hidden="true" />}
+                                {link.label}
+                            </Link>
+                        ))}
                     </div>
                 )}
-            </div>
+            </nav>
         </header>
     );
 }
