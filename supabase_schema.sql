@@ -10,10 +10,14 @@ create table reports (
   lat float not null,
   lng float not null,
   image_url text, -- We will store Base64 here for now to avoid Storage Bucket setup friction, or a signed URL later
+  image_hash text, -- Hash of image for duplicate detection
   status text default 'OPEN' check (status in ('OPEN', 'IN_PROGRESS', 'RESOLVED')),
   upvotes int default 0,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
+
+-- Create index for fast duplicate lookups
+create index idx_reports_image_hash on reports(image_hash);
 
 -- 2. Enable Row Level Security (RLS)
 alter table reports enable row level security;
