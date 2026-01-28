@@ -6,14 +6,32 @@ import "leaflet/dist/leaflet.css";
 import type { Report } from "@/lib/types";
 import L from "leaflet";
 
-// Fix for default Leaflet markers in Next.js
-const customIcon = new L.Icon({
-    iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-    iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-    shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-});
+// Severity-based marker colors using SVG data URIs
+const createColoredIcon = (color: string) => {
+    const svgIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
+      <path fill="${color}" stroke="#333" stroke-width="1" d="M12 0C5.4 0 0 5.4 0 12c0 7.2 12 24 12 24s12-16.8 12-24c0-6.6-5.4-12-12-12z"/>
+      <circle fill="white" cx="12" cy="12" r="5"/>
+    </svg>
+  `;
+    return new L.Icon({
+        iconUrl: `data:image/svg+xml;base64,${btoa(svgIcon)}`,
+        iconSize: [24, 36],
+        iconAnchor: [12, 36],
+        popupAnchor: [0, -36],
+    });
+};
+
+// Pre-create icons for performance
+const redIcon = createColoredIcon("#EF4444");    // High severity (7-10)
+const orangeIcon = createColoredIcon("#F97316"); // Medium severity (4-6)
+const greenIcon = createColoredIcon("#22C55E");  // Low severity (1-3)
+
+const getIconBySeverity = (severity: number) => {
+    if (severity >= 7) return redIcon;
+    if (severity >= 4) return orangeIcon;
+    return greenIcon;
+};
 
 function MapController({ center }: { center: [number, number] }) {
     const map = useMap();
@@ -48,14 +66,15 @@ export default function MapView({ reports, center, onMarkerClick }: MapViewProps
                     <Marker
                         key={report.id}
                         position={[report.lat, report.lng]}
-                        icon={customIcon}
+                        icon={getIconBySeverity(report.severity)}
                         eventHandlers={{
                             click: () => onMarkerClick?.(report),
                         }}
                     >
                         <Popup>
-                            <div className="text-sm font-medium">{report.category}</div>
-                            <div className="text-xs text-neutral-500">{report.status}</div>
+                            <div className="font-medium">{report.category}</div>
+                            <div className="text-xs text-neutral-500">Severity: {report.severity}/10</div>
+                            <div className="text-xs text-neutral-400">{report.status}</div>
                         </Popup>
                     </Marker>
                 ))}

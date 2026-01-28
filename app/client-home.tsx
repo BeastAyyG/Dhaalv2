@@ -4,10 +4,12 @@ import { useState } from "react";
 import { MapView } from "@/components/map";
 import { ReportCard } from "@/components/feed/report-card";
 import { NewReportModal } from "@/components/feed/new-report-modal";
-import { Plus, Map as MapIcon, List, User } from "lucide-react";
+import { Plus, Map as MapIcon, List, User, Sun, Moon, LogIn, LogOut } from "lucide-react";
 import type { Report } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
+import { useTheme } from "@/lib/theme-context";
+import { useAuth } from "@/lib/auth-context";
+import Link from "next/link";
 interface ClientHomeProps {
   reports: Report[];
 }
@@ -15,7 +17,8 @@ interface ClientHomeProps {
 export default function ClientHome({ reports }: ClientHomeProps) {
   const [viewMode, setViewMode] = useState<"map" | "feed">("feed");
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-
+  const { theme, toggleTheme } = useTheme();
+  const { user, loading, signOut } = useAuth();
   // Default Center (Bangalore) - In real app, calculate from reports or user loc
   const defaultCenter: [number, number] = [12.9716, 77.5946];
 
@@ -26,10 +29,32 @@ export default function ClientHome({ reports }: ClientHomeProps) {
       <div className="md:hidden h-16 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between px-4 z-20 shrink-0">
         <h1 className="font-bold text-xl tracking-tight">Dhaal 🛡️</h1>
         <div className="flex items-center gap-3">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
           <div className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold px-2 py-1 rounded-full">
             1,250 XP
           </div>
-          <button className="w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-800" />
+          {user ? (
+            <button
+              onClick={() => signOut()}
+              className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold"
+              title={user.phone || "User"}
+            >
+              {user.phone?.slice(-2) || "U"}
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="flex items-center gap-1 px-3 py-1.5 bg-black dark:bg-white text-white dark:text-black rounded-full text-xs font-medium"
+            >
+              <LogIn className="w-3 h-3" /> Login
+            </Link>
+          )}
         </div>
       </div>
 
@@ -60,8 +85,30 @@ export default function ClientHome({ reports }: ClientHomeProps) {
           <div className="p-4 space-y-4 pb-24 md:pb-4">
             <div className="hidden md:flex items-center justify-between mb-6">
               <h1 className="font-bold text-2xl">Community Reports</h1>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+                  aria-label="Toggle theme"
+                >
+                  {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </button>
                 <span className="text-sm text-neutral-500">Bangalore, IN</span>
+                {user ? (
+                  <button
+                    onClick={() => signOut()}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full text-sm hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" /> Logout
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="flex items-center gap-2 px-3 py-1.5 bg-black dark:bg-white text-white dark:text-black rounded-full text-sm font-medium"
+                  >
+                    <LogIn className="w-4 h-4" /> Login
+                  </Link>
+                )}
               </div>
             </div>
 
