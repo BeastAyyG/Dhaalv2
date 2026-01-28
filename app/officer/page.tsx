@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import { Header } from "@/components/ui/header";
-import { GlassCard } from "@/components/ui/glass-card";
 import { SeverityBadge, StatusBadge } from "@/components/ui/badges";
 import {
-    Search, Filter, CheckCircle, Clock, AlertTriangle,
-    MapPin, Eye, MoreVertical, TrendingUp, Users, FileText
+    Search, CheckCircle, Clock, AlertTriangle,
+    MapPin, Eye, MoreVertical, TrendingUp, FileText, Filter
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -40,7 +39,7 @@ export default function OfficerDashboard() {
     });
 
     return (
-        <div className="min-h-screen bg-[var(--background)]">
+        <div className="min-h-screen bg-[var(--bg-deep)]">
             <Header />
 
             <main className="pt-24 pb-8 px-4">
@@ -48,79 +47,79 @@ export default function OfficerDashboard() {
 
                     {/* Page Title */}
                     <div className="mb-8">
-                        <h1 className="text-3xl font-bold mb-2">
+                        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
                             Officer <span className="gradient-text">Dashboard</span>
                         </h1>
-                        <p className="text-[var(--muted)]">Manage and resolve civic reports</p>
+                        <p className="text-[var(--text-muted)]">Manage and resolve civic reports</p>
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                        <GlassCard hover={false} className="p-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+                        <div className="glass-card p-4 hover-lift cursor-default">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                                    <FileText className="w-5 h-5 text-blue-500" />
+                                <div className="w-10 h-10 rounded-xl bg-[var(--brand)]/10 flex items-center justify-center">
+                                    <FileText className="w-5 h-5 text-[var(--brand-light)]" />
                                 </div>
                                 <div>
-                                    <div className="text-2xl font-bold">{stats.total}</div>
-                                    <div className="text-xs text-[var(--muted)]">Total Reports</div>
+                                    <div className="text-2xl font-bold text-[var(--text-primary)]">{stats.total}</div>
+                                    <div className="text-xs text-[var(--text-muted)]">Total Reports</div>
                                 </div>
                             </div>
-                        </GlassCard>
+                        </div>
 
-                        <GlassCard hover={false} className="p-4">
+                        <div className="glass-card p-4 hover-lift cursor-default">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
-                                    <AlertTriangle className="w-5 h-5 text-amber-500" />
+                                <div className="w-10 h-10 rounded-xl bg-[var(--warning-bg)] flex items-center justify-center">
+                                    <AlertTriangle className="w-5 h-5 text-[var(--warning)]" />
                                 </div>
                                 <div>
-                                    <div className="text-2xl font-bold text-amber-500">{stats.open}</div>
-                                    <div className="text-xs text-[var(--muted)]">Open</div>
+                                    <div className="text-2xl font-bold text-[var(--warning)]">{stats.open}</div>
+                                    <div className="text-xs text-[var(--text-muted)]">Open</div>
                                 </div>
                             </div>
-                        </GlassCard>
+                        </div>
 
-                        <GlassCard hover={false} className="p-4">
+                        <div className="glass-card p-4 hover-lift cursor-default">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                                    <Clock className="w-5 h-5 text-blue-500" />
+                                <div className="w-10 h-10 rounded-xl bg-[var(--brand)]/10 flex items-center justify-center">
+                                    <Clock className="w-5 h-5 text-[var(--brand-light)]" />
                                 </div>
                                 <div>
-                                    <div className="text-2xl font-bold text-blue-500">{stats.inProgress}</div>
-                                    <div className="text-xs text-[var(--muted)]">In Progress</div>
+                                    <div className="text-2xl font-bold text-[var(--brand-light)]">{stats.inProgress}</div>
+                                    <div className="text-xs text-[var(--text-muted)]">In Progress</div>
                                 </div>
                             </div>
-                        </GlassCard>
+                        </div>
 
-                        <GlassCard hover={false} className="p-4">
+                        <div className="glass-card p-4 hover-lift cursor-default">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center">
-                                    <CheckCircle className="w-5 h-5 text-green-500" />
+                                <div className="w-10 h-10 rounded-xl bg-[var(--success-bg)] flex items-center justify-center">
+                                    <CheckCircle className="w-5 h-5 text-[var(--success)]" />
                                 </div>
                                 <div>
-                                    <div className="text-2xl font-bold text-green-500">{stats.resolved}</div>
-                                    <div className="text-xs text-[var(--muted)]">Resolved</div>
+                                    <div className="text-2xl font-bold text-[var(--success)]">{stats.resolved}</div>
+                                    <div className="text-xs text-[var(--text-muted)]">Resolved</div>
                                 </div>
                             </div>
-                        </GlassCard>
+                        </div>
                     </div>
 
                     {/* Filters & Search */}
                     <div className="flex flex-col md:flex-row gap-4 mb-6">
                         {/* Search */}
                         <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--muted)]" />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-subtle)]" />
                             <input
                                 type="text"
                                 placeholder="Search reports..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)] focus:border-[var(--primary)] outline-none transition-colors"
+                                className="input pl-12"
                             />
                         </div>
 
                         {/* Filter Tabs */}
-                        <div className="flex items-center gap-1 p-1 rounded-xl bg-[var(--border)]">
+                        <div className="flex items-center gap-1 p-1 rounded-xl bg-[var(--bg-surface)] border border-[var(--glass-border)]">
                             {[
                                 { key: "all", label: "All" },
                                 { key: "open", label: "Open" },
@@ -131,10 +130,10 @@ export default function OfficerDashboard() {
                                     key={key}
                                     onClick={() => setFilter(key as typeof filter)}
                                     className={cn(
-                                        "px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
+                                        "px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer",
                                         filter === key
-                                            ? "bg-[var(--card)] shadow-sm"
-                                            : "text-[var(--muted)] hover:text-[var(--foreground)]"
+                                            ? "bg-[var(--brand)] text-white shadow-lg"
+                                            : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                                     )}
                                 >
                                     {label}
@@ -144,11 +143,11 @@ export default function OfficerDashboard() {
                     </div>
 
                     {/* Reports Table */}
-                    <GlassCard hover={false} className="overflow-hidden">
+                    <div className="glass-card-static overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full">
-                                <thead className="border-b border-[var(--border)]">
-                                    <tr className="text-left text-sm text-[var(--muted)]">
+                                <thead className="border-b border-[var(--glass-border)]">
+                                    <tr className="text-left text-sm text-[var(--text-muted)]">
                                         <th className="p-4 font-medium">Category</th>
                                         <th className="p-4 font-medium">Location</th>
                                         <th className="p-4 font-medium">Severity</th>
@@ -159,14 +158,14 @@ export default function OfficerDashboard() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredReports.map((report, index) => (
+                                    {filteredReports.map((report) => (
                                         <tr
                                             key={report.id}
-                                            className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--border)]/50 transition-colors"
+                                            className="border-b border-[var(--glass-border)] last:border-0 hover:bg-[var(--bg-hover)] transition-colors"
                                         >
-                                            <td className="p-4 font-medium">{report.category}</td>
+                                            <td className="p-4 font-medium text-[var(--text-primary)]">{report.category}</td>
                                             <td className="p-4">
-                                                <span className="flex items-center gap-1 text-sm text-[var(--muted)]">
+                                                <span className="flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
                                                     <MapPin className="w-3.5 h-3.5" />
                                                     {report.location}
                                                 </span>
@@ -178,18 +177,18 @@ export default function OfficerDashboard() {
                                                 <StatusBadge status={report.status as any} size="sm" />
                                             </td>
                                             <td className="p-4">
-                                                <span className="flex items-center gap-1 text-sm">
-                                                    <TrendingUp className="w-3.5 h-3.5 text-[var(--primary)]" />
+                                                <span className="flex items-center gap-1.5 text-sm text-[var(--text-primary)]">
+                                                    <TrendingUp className="w-3.5 h-3.5 text-[var(--brand-light)]" />
                                                     {report.upvotes}
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-sm text-[var(--muted)]">{report.date}</td>
+                                            <td className="p-4 text-sm text-[var(--text-muted)]">{report.date}</td>
                                             <td className="p-4">
                                                 <div className="flex items-center gap-1">
-                                                    <button className="p-2 rounded-lg hover:bg-[var(--border)] transition-colors">
+                                                    <button className="p-2 rounded-lg hover:bg-[var(--bg-surface)] transition-colors cursor-pointer text-[var(--text-muted)]">
                                                         <Eye className="w-4 h-4" />
                                                     </button>
-                                                    <button className="p-2 rounded-lg hover:bg-[var(--border)] transition-colors">
+                                                    <button className="p-2 rounded-lg hover:bg-[var(--bg-surface)] transition-colors cursor-pointer text-[var(--text-muted)]">
                                                         <MoreVertical className="w-4 h-4" />
                                                     </button>
                                                 </div>
@@ -199,7 +198,7 @@ export default function OfficerDashboard() {
                                 </tbody>
                             </table>
                         </div>
-                    </GlassCard>
+                    </div>
                 </div>
             </main>
         </div>

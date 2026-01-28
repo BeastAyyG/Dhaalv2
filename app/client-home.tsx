@@ -5,7 +5,7 @@ import { MapView } from "@/components/map";
 import { ReportCard } from "@/components/feed/report-card";
 import { NewReportModal } from "@/components/feed/new-report-modal";
 import { Header } from "@/components/ui/header";
-import { Plus, Map as MapIcon, List, Filter, TrendingUp } from "lucide-react";
+import { Plus, Map as MapIcon, List, TrendingUp, AlertCircle, CheckCircle, Clock } from "lucide-react";
 import type { Report } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -34,60 +34,95 @@ export default function ClientHome({ reports }: ClientHomeProps) {
   const stats = {
     total: reports.length,
     open: reports.filter(r => r.status === "OPEN").length,
+    inProgress: reports.filter(r => r.status === "IN_PROGRESS").length,
     resolved: reports.filter(r => r.status === "RESOLVED").length,
   };
 
   const handleLocateReport = (report: Report) => {
     setViewMode("map");
-    // TODO: Pan to report location
   };
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
+    <div className="min-h-screen bg-[var(--bg-deep)]">
       {/* Header */}
       <Header />
 
-      {/* Main Content - Pushed down for fixed header */}
+      {/* Main Content */}
       <main className="pt-24 pb-24 md:pb-8">
         <div className="max-w-7xl mx-auto px-4">
 
           {/* Hero Section */}
-          <div className="mb-8 text-center md:text-left">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">
+          <div className="mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-2">
               Community <span className="gradient-text">Reports</span>
             </h1>
-            <p className="text-[var(--muted)]">
-              {stats.total} issues reported · {stats.open} open · {stats.resolved} resolved
+            <p className="text-[var(--text-muted)]">
+              Empowering citizens to build better cities
             </p>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="glass-card p-4 text-center">
-              <div className="text-2xl font-bold gradient-text">{stats.total}</div>
-              <div className="text-xs text-[var(--muted)]">Total Reports</div>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+            <div className="glass-card p-4 hover-lift cursor-default">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[var(--brand)]/10 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-[var(--brand-light)]" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-[var(--text-primary)]">{stats.total}</div>
+                  <div className="text-xs text-[var(--text-muted)]">Total Reports</div>
+                </div>
+              </div>
             </div>
-            <div className="glass-card p-4 text-center">
-              <div className="text-2xl font-bold text-amber-500">{stats.open}</div>
-              <div className="text-xs text-[var(--muted)]">Open Issues</div>
+
+            <div className="glass-card p-4 hover-lift cursor-default">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[var(--warning-bg)] flex items-center justify-center">
+                  <AlertCircle className="w-5 h-5 text-[var(--warning)]" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-[var(--warning)]">{stats.open}</div>
+                  <div className="text-xs text-[var(--text-muted)]">Open</div>
+                </div>
+              </div>
             </div>
-            <div className="glass-card p-4 text-center">
-              <div className="text-2xl font-bold text-green-500">{stats.resolved}</div>
-              <div className="text-xs text-[var(--muted)]">Resolved</div>
+
+            <div className="glass-card p-4 hover-lift cursor-default">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[var(--brand)]/10 flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-[var(--brand-light)]" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-[var(--brand-light)]">{stats.inProgress}</div>
+                  <div className="text-xs text-[var(--text-muted)]">In Progress</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="glass-card p-4 hover-lift cursor-default">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[var(--success-bg)] flex items-center justify-center">
+                  <CheckCircle className="w-5 h-5 text-[var(--success)]" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-[var(--success)]">{stats.resolved}</div>
+                  <div className="text-xs text-[var(--text-muted)]">Resolved</div>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* View Toggle & Filters */}
           <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
             {/* View Mode Toggle */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-[var(--border)]">
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-[var(--bg-surface)] border border-[var(--glass-border)]">
               <button
                 onClick={() => setViewMode("feed")}
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
                   viewMode === "feed"
-                    ? "bg-[var(--card)] shadow-sm"
-                    : "text-[var(--muted)] hover:text-[var(--foreground)]"
+                    ? "bg-[var(--brand)] text-white shadow-lg"
+                    : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 )}
               >
                 <List className="w-4 h-4" />
@@ -98,8 +133,8 @@ export default function ClientHome({ reports }: ClientHomeProps) {
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
                   viewMode === "map"
-                    ? "bg-[var(--card)] shadow-sm"
-                    : "text-[var(--muted)] hover:text-[var(--foreground)]"
+                    ? "bg-[var(--brand)] text-white shadow-lg"
+                    : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 )}
               >
                 <MapIcon className="w-4 h-4" />
@@ -112,10 +147,10 @@ export default function ClientHome({ reports }: ClientHomeProps) {
               <button
                 onClick={() => setSelectedCategory(null)}
                 className={cn(
-                  "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                  "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all border",
                   !selectedCategory
-                    ? "bg-[var(--primary)] text-white"
-                    : "bg-[var(--border)] hover:bg-[var(--primary)]/10"
+                    ? "bg-[var(--brand)] text-white border-transparent shadow-lg"
+                    : "bg-transparent border-[var(--glass-border)] text-[var(--text-muted)] hover:border-[var(--brand)]/50 hover:text-[var(--text-primary)]"
                 )}
               >
                 All
@@ -125,10 +160,10 @@ export default function ClientHome({ reports }: ClientHomeProps) {
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
                   className={cn(
-                    "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                    "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all border",
                     selectedCategory === cat
-                      ? "bg-[var(--primary)] text-white"
-                      : "bg-[var(--border)] hover:bg-[var(--primary)]/10"
+                      ? "bg-[var(--brand)] text-white border-transparent shadow-lg"
+                      : "bg-transparent border-[var(--glass-border)] text-[var(--text-muted)] hover:border-[var(--brand)]/50 hover:text-[var(--text-primary)]"
                   )}
                 >
                   {cat}
@@ -142,7 +177,7 @@ export default function ClientHome({ reports }: ClientHomeProps) {
 
             {/* Left: Map */}
             <div className={cn(
-              "h-[400px] md:h-[600px] rounded-2xl overflow-hidden glass-card p-0",
+              "h-[400px] md:h-[600px] rounded-2xl overflow-hidden glass-card-static p-0",
               viewMode === "feed" && "hidden md:block"
             )}>
               <MapView
@@ -159,15 +194,27 @@ export default function ClientHome({ reports }: ClientHomeProps) {
             )}>
               {filteredReports.length === 0 ? (
                 <div className="glass-card p-8 text-center">
-                  <div className="text-6xl mb-4">📭</div>
-                  <h3 className="font-bold text-lg mb-2">No Reports Yet</h3>
-                  <p className="text-[var(--muted)] text-sm">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
+                    <AlertCircle className="w-8 h-8 text-[var(--brand-light)]" />
+                  </div>
+                  <h3 className="font-bold text-lg text-[var(--text-primary)] mb-2">No Reports Yet</h3>
+                  <p className="text-[var(--text-muted)] text-sm mb-4">
                     Be the first to report an issue in your area!
                   </p>
+                  <button
+                    onClick={() => setIsReportModalOpen(true)}
+                    className="btn-primary"
+                  >
+                    Create Report
+                  </button>
                 </div>
               ) : (
                 filteredReports.map((report, index) => (
-                  <div key={report.id} style={{ animationDelay: `${index * 50}ms` }}>
+                  <div
+                    key={report.id}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
                     <ReportCard
                       report={report}
                       onLocate={handleLocateReport}
@@ -183,19 +230,21 @@ export default function ClientHome({ reports }: ClientHomeProps) {
       {/* Floating Action Button */}
       <button
         onClick={() => setIsReportModalOpen(true)}
-        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 w-16 h-16 rounded-2xl btn-primary shadow-xl shadow-emerald-500/30 flex items-center justify-center z-50 animate-pulse-glow"
+        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-[var(--gradient-brand)] shadow-xl flex items-center justify-center z-50 animate-pulse-glow hover-lift active-scale"
       >
-        <Plus className="w-7 h-7" />
+        <Plus className="w-6 h-6 md:w-7 md:h-7 text-white" />
       </button>
 
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass-card rounded-t-2xl rounded-b-none">
-        <div className="flex items-center justify-around h-16">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass-card-static rounded-t-2xl rounded-b-none border-b-0">
+        <div className="flex items-center justify-around h-16 px-4">
           <button
             onClick={() => setViewMode("feed")}
             className={cn(
-              "flex flex-col items-center gap-1 text-xs font-medium transition-colors",
-              viewMode === "feed" ? "text-[var(--primary)]" : "text-[var(--muted)]"
+              "flex flex-col items-center gap-1 text-xs font-medium transition-colors py-2 px-4 rounded-xl",
+              viewMode === "feed"
+                ? "text-[var(--brand-light)] bg-[var(--brand)]/10"
+                : "text-[var(--text-muted)]"
             )}
           >
             <List className="w-5 h-5" />
@@ -204,17 +253,22 @@ export default function ClientHome({ reports }: ClientHomeProps) {
           <button
             onClick={() => setViewMode("map")}
             className={cn(
-              "flex flex-col items-center gap-1 text-xs font-medium transition-colors",
-              viewMode === "map" ? "text-[var(--primary)]" : "text-[var(--muted)]"
+              "flex flex-col items-center gap-1 text-xs font-medium transition-colors py-2 px-4 rounded-xl",
+              viewMode === "map"
+                ? "text-[var(--brand-light)] bg-[var(--brand)]/10"
+                : "text-[var(--text-muted)]"
             )}
           >
             <MapIcon className="w-5 h-5" />
             Map
           </button>
-          <button className="flex flex-col items-center gap-1 text-xs font-medium text-[var(--muted)]">
+          <a
+            href="/analytics"
+            className="flex flex-col items-center gap-1 text-xs font-medium text-[var(--text-muted)] py-2 px-4 rounded-xl"
+          >
             <TrendingUp className="w-5 h-5" />
-            Analytics
-          </button>
+            Stats
+          </a>
         </div>
       </nav>
 
