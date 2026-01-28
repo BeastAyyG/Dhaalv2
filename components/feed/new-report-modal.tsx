@@ -148,18 +148,41 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
 
                     {step === "duplicate" && duplicateInfo?.existingReport && (
                         <div className="space-y-4">
-                            <div className="flex flex-col items-center text-center p-6">
-                                <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-4">
-                                    <AlertTriangle className="w-8 h-8 text-amber-600" />
+                            <div className="flex flex-col items-center text-center p-4">
+                                <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
+                                    <AlertTriangle className="w-8 h-8 text-red-600" />
                                 </div>
-                                <h3 className="text-lg font-bold text-amber-600 mb-2">Duplicate Photo Detected!</h3>
-                                <p className="text-sm text-neutral-500 mb-4">
-                                    A similar problem has already been reported.
+                                <h3 className="text-lg font-bold text-red-600 mb-2">⚠️ Fraud Alert!</h3>
+                                <p className="text-sm text-neutral-500 mb-2">
+                                    This photo appears to match an existing report.
                                 </p>
+                                {duplicateInfo.similarityScore && (
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className="text-xs text-neutral-400">AI Confidence:</span>
+                                        <span className={cn(
+                                            "text-sm font-bold px-2 py-0.5 rounded",
+                                            duplicateInfo.similarityScore >= 90
+                                                ? "bg-red-100 text-red-700"
+                                                : "bg-amber-100 text-amber-700"
+                                        )}>
+                                            {duplicateInfo.similarityScore}%
+                                        </span>
+                                    </div>
+                                )}
+                                {duplicateInfo.reason && (
+                                    <p className="text-xs text-neutral-400 italic mb-3">
+                                        "{duplicateInfo.reason}"
+                                    </p>
+                                )}
                                 <div className="w-full bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 text-left">
-                                    <p className="text-sm font-medium">{duplicateInfo.existingReport.category}</p>
+                                    <p className="text-sm font-medium mb-1">{duplicateInfo.existingReport.category}</p>
                                     <p className="text-xs text-neutral-500">
-                                        Status: <span className="font-medium">{duplicateInfo.existingReport.status}</span>
+                                        Status: <span className={cn(
+                                            "font-medium",
+                                            duplicateInfo.existingReport.status === "RESOLVED" && "text-green-600",
+                                            duplicateInfo.existingReport.status === "OPEN" && "text-amber-600",
+                                            duplicateInfo.existingReport.status === "IN_PROGRESS" && "text-blue-600"
+                                        )}>{duplicateInfo.existingReport.status}</span>
                                     </p>
                                     <p className="text-xs text-neutral-400">
                                         Reported: {new Date(duplicateInfo.existingReport.created_at).toLocaleDateString()}
@@ -175,13 +198,14 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                 </button>
                                 <button
                                     onClick={proceedAnyway}
-                                    className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-xl transition-colors"
+                                    className="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl transition-colors"
                                 >
                                     Report Anyway
                                 </button>
                             </div>
                         </div>
                     )}
+
 
                     {step === "details" && analysis && (
                         <div className="space-y-4">
