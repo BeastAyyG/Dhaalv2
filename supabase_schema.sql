@@ -1,7 +1,7 @@
 -- Run this in your Supabase SQL Editor
 
 -- 1. Create Reports Table
-create table reports (
+create table if not exists reports (
   id uuid default gen_random_uuid() primary key,
   user_id uuid, -- nullable for anonymous reports for now
   category text not null,
@@ -17,7 +17,7 @@ create table reports (
 );
 
 -- Create index for fast duplicate lookups
-create index idx_reports_image_hash on reports(image_hash);
+create index if not exists idx_reports_image_hash on reports(image_hash);
 
 -- 2. Enable Row Level Security (RLS)
 alter table reports enable row level security;
@@ -37,3 +37,31 @@ create policy "Anyone can insert reports"
 create policy "Public can update upvotes"
   on reports for update
   using ( true );
+
+-- PHASE 2 UPDATES: GAMIFICATION & OWNER
+-- Add gamification columns to reports
+alter table reports add column if not exists officer_id uuid;
+alter table reports add column if not exists priority text default 'NORMAL';
+
+-- Create users table for gamification
+create table if not exists users (
+  id uuid primary key default gen_random_uuid(),
+  phone text unique,
+  name text,
+  xp int default 0,
+  level int default 1,
+  badges text[] default '{}',
+  created_at timestamptz default now()
+);
+
+-- Enable RLS for users
+alter table users enable row level security;
+
+-- Users policies
+create policy "Users can read own data"
+    on users for select
+    using ( auth.uid() = id );
+
+create policy "Users can update own data"
+    on users for update
+    using ( auth.uid() = id );

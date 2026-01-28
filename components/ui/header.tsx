@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import { Sun, Moon, LogIn, LogOut, Shield, BarChart3, Menu, Globe, Zap, User, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { NotificationsDropdown } from "@/components/ui/notifications-dropdown";
 
 export function Header() {
     const { theme, toggleTheme } = useTheme();
@@ -61,6 +62,9 @@ export function Header() {
                             <Zap className="w-3.5 h-3.5 text-[var(--info)]" aria-hidden="true" />
                             <span className="text-xs font-semibold font-mono text-[var(--info)]">1,250</span>
                         </div>
+
+                        {/* Notifications */}
+                        <NotificationsDropdown />
 
                         {/* Language Toggle */}
                         <button

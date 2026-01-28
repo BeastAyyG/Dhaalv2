@@ -31,10 +31,10 @@ export function ReportCard({ report, onLocate }: ReportCardProps) {
     return (
         <article className="glass-card-interactive overflow-hidden">
             {/* Image */}
-            {report.imageUrl && (
+            {report.image_url && (
                 <div className="relative h-44 -mx-4 -mt-4 overflow-hidden">
                     <img
-                        src={report.imageUrl}
+                        src={report.image_url}
                         alt={`${report.category} issue reported`}
                         className="w-full h-full object-cover"
                         loading="lazy"
@@ -59,7 +59,7 @@ export function ReportCard({ report, onLocate }: ReportCardProps) {
             {/* Content */}
             <div className="space-y-3 pt-2">
                 {/* No image header */}
-                {!report.imageUrl && (
+                {!report.image_url && (
                     <header className="flex items-start justify-between gap-2">
                         <h3 className="font-semibold text-lg text-[var(--text-primary)]">{report.category}</h3>
                         <div className="flex items-center gap-2 flex-shrink-0">
@@ -86,10 +86,10 @@ export function ReportCard({ report, onLocate }: ReportCardProps) {
                     </button>
                     <time
                         className="flex items-center gap-1.5"
-                        dateTime={report.createdAt}
+                        dateTime={report.created_at}
                     >
                         <Clock className="w-3.5 h-3.5" aria-hidden="true" />
-                        {timeAgo(report.createdAt)}
+                        {timeAgo(report.created_at)}
                     </time>
                 </div>
 
