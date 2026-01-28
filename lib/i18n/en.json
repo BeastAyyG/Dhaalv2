@@ -1,0 +1,104 @@
+{
+    "common": {
+        "appName": "Dhaal",
+        "tagline": "AI-Powered Civic Reporting",
+        "login": "Login",
+        "logout": "Logout",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "save": "Save",
+        "delete": "Delete",
+        "edit": "Edit",
+        "view": "View",
+        "close": "Close",
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success"
+    },
+    "nav": {
+        "feed": "Feed",
+        "map": "Map",
+        "analytics": "Analytics",
+        "officer": "Officer Panel",
+        "profile": "Profile"
+    },
+    "home": {
+        "title": "Community Reports",
+        "subtitle": "issues reported",
+        "open": "open",
+        "resolved": "resolved",
+        "noReports": "No Reports Yet",
+        "noReportsDesc": "Be the first to report an issue in your area!",
+        "viewOnMap": "View on Map",
+        "totalReports": "Total Reports",
+        "openIssues": "Open Issues",
+        "filter": {
+            "all": "All",
+            "pothole": "Pothole",
+            "garbage": "Garbage",
+            "streetLight": "Street Light",
+            "waterLeak": "Water Leak"
+        }
+    },
+    "report": {
+        "title": "Report Issue",
+        "takePhoto": "Tap to take photo",
+        "analyzing": "AI is analyzing scene...",
+        "detected": "Detected",
+        "severity": "Severity",
+        "description": "Description",
+        "submitReport": "Submit Report",
+        "xpReward": "+50 XP",
+        "duplicateTitle": "Fraud Alert!",
+        "duplicateDesc": "This photo appears to match an existing report.",
+        "reportAnyway": "Report Anyway",
+        "aiConfidence": "AI Confidence"
+    },
+    "officer": {
+        "title": "Officer Dashboard",
+        "subtitle": "Manage and resolve civic reports",
+        "search": "Search reports...",
+        "inProgress": "In Progress",
+        "location": "Location",
+        "upvotes": "Upvotes",
+        "date": "Date",
+        "actions": "Actions"
+    },
+    "analytics": {
+        "title": "Analytics Dashboard",
+        "subtitle": "Track civic reporting trends and patterns",
+        "resolutionRate": "Resolution Rate",
+        "avgResolutionTime": "Avg Resolution Time",
+        "activeCitizens": "Active Citizens",
+        "reportsByCategory": "Reports by Category",
+        "weeklyReports": "Weekly Reports",
+        "topAreas": "Top Reported Areas"
+    },
+    "profile": {
+        "level": "Level",
+        "rank": "Rank",
+        "badges": "Badges",
+        "leaderboard": "Leaderboard",
+        "reports": "Reports",
+        "upvotes": "Upvotes",
+        "xpToNext": "XP to next level"
+    },
+    "badges": {
+        "firstReport": "First Report",
+        "activeCitizen": "Active Citizen",
+        "guardian": "Guardian",
+        "champion": "Champion",
+        "influencer": "Influencer",
+        "problemSolver": "Problem Solver"
+    },
+    "status": {
+        "open": "Open",
+        "inProgress": "In Progress",
+        "resolved": "Resolved"
+    },
+    "severity": {
+        "low": "Low",
+        "medium": "Medium",
+        "critical": "Critical"
+    }
+}

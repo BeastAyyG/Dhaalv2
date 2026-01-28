@@ -1,15 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { MapView } from "@/components/map";
 import { ReportCard } from "@/components/feed/report-card";
 import { NewReportModal } from "@/components/feed/new-report-modal";
-import { Plus, Map as MapIcon, List, User, Sun, Moon, LogIn, LogOut } from "lucide-react";
+import { Header } from "@/components/ui/header";
+import { Plus, Map as MapIcon, List, Filter, TrendingUp } from "lucide-react";
 import type { Report } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/lib/theme-context";
-import { useAuth } from "@/lib/auth-context";
-import Link from "next/link";
+
 interface ClientHomeProps {
   reports: Report[];
 }
@@ -17,144 +16,213 @@ interface ClientHomeProps {
 export default function ClientHome({ reports }: ClientHomeProps) {
   const [viewMode, setViewMode] = useState<"map" | "feed">("feed");
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
-  const { user, loading, signOut } = useAuth();
-  // Default Center (Bangalore) - In real app, calculate from reports or user loc
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const mapRef = useRef<any>(null);
+
+  // Default Center (Bangalore)
   const defaultCenter: [number, number] = [12.9716, 77.5946];
 
+  // Get unique categories
+  const categories = [...new Set(reports.map(r => r.category))];
+
+  // Filter reports
+  const filteredReports = selectedCategory
+    ? reports.filter(r => r.category === selectedCategory)
+    : reports;
+
+  // Stats
+  const stats = {
+    total: reports.length,
+    open: reports.filter(r => r.status === "OPEN").length,
+    resolved: reports.filter(r => r.status === "RESOLVED").length,
+  };
+
+  const handleLocateReport = (report: Report) => {
+    setViewMode("map");
+    // TODO: Pan to report location
+  };
+
   return (
-    <div className="h-screen w-full flex flex-col md:flex-row overflow-hidden">
+    <div className="min-h-screen bg-[var(--background)]">
+      {/* Header */}
+      <Header />
 
-      {/* Mobile Header */}
-      <div className="md:hidden h-16 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between px-4 z-20 shrink-0">
-        <h1 className="font-bold text-xl tracking-tight">Dhaal 🛡️</h1>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-            aria-label="Toggle theme"
-          >
-            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-          <div className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold px-2 py-1 rounded-full">
-            1,250 XP
+      {/* Main Content - Pushed down for fixed header */}
+      <main className="pt-24 pb-24 md:pb-8">
+        <div className="max-w-7xl mx-auto px-4">
+
+          {/* Hero Section */}
+          <div className="mb-8 text-center md:text-left">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">
+              Community <span className="gradient-text">Reports</span>
+            </h1>
+            <p className="text-[var(--muted)]">
+              {stats.total} issues reported · {stats.open} open · {stats.resolved} resolved
+            </p>
           </div>
-          {user ? (
-            <button
-              onClick={() => signOut()}
-              className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold"
-              title={user.phone || "User"}
-            >
-              {user.phone?.slice(-2) || "U"}
-            </button>
-          ) : (
-            <Link
-              href="/login"
-              className="flex items-center gap-1 px-3 py-1.5 bg-black dark:bg-white text-white dark:text-black rounded-full text-xs font-medium"
-            >
-              <LogIn className="w-3 h-3" /> Login
-            </Link>
-          )}
-        </div>
-      </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 relative h-full md:grid md:grid-cols-2">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            <div className="glass-card p-4 text-center">
+              <div className="text-2xl font-bold gradient-text">{stats.total}</div>
+              <div className="text-xs text-[var(--muted)]">Total Reports</div>
+            </div>
+            <div className="glass-card p-4 text-center">
+              <div className="text-2xl font-bold text-amber-500">{stats.open}</div>
+              <div className="text-xs text-[var(--muted)]">Open Issues</div>
+            </div>
+            <div className="glass-card p-4 text-center">
+              <div className="text-2xl font-bold text-green-500">{stats.resolved}</div>
+              <div className="text-xs text-[var(--muted)]">Resolved</div>
+            </div>
+          </div>
 
-        {/* Left: Map (Always visible on Desktop, toggled on Mobile) */}
-        <div className={cn(
-          "h-full w-full relative",
-          viewMode === "feed" ? "hidden md:block" : "block"
-        )}>
-          <MapView reports={reports} center={defaultCenter} />
-
-          {/* Mobile Floating Toggle */}
-          <button
-            onClick={() => setViewMode("feed")}
-            className="md:hidden absolute bottom-20 left-1/2 -translate-x-1/2 bg-white text-black px-4 py-2 rounded-full shadow-lg font-medium z-[1000] flex items-center gap-2"
-          >
-            <List className="w-4 h-4" /> Show List
-          </button>
-        </div>
-
-        {/* Right: Feed (Always visible on Desktop, toggled on Mobile) */}
-        <div className={cn(
-          "h-full w-full bg-neutral-50 dark:bg-neutral-950 overflow-y-auto",
-          viewMode === "map" ? "hidden md:block" : "block"
-        )}>
-          <div className="p-4 space-y-4 pb-24 md:pb-4">
-            <div className="hidden md:flex items-center justify-between mb-6">
-              <h1 className="font-bold text-2xl">Community Reports</h1>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
-                  aria-label="Toggle theme"
-                >
-                  {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                </button>
-                <span className="text-sm text-neutral-500">Bangalore, IN</span>
-                {user ? (
-                  <button
-                    onClick={() => signOut()}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full text-sm hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
-                  >
-                    <LogOut className="w-4 h-4" /> Logout
-                  </button>
-                ) : (
-                  <Link
-                    href="/login"
-                    className="flex items-center gap-2 px-3 py-1.5 bg-black dark:bg-white text-white dark:text-black rounded-full text-sm font-medium"
-                  >
-                    <LogIn className="w-4 h-4" /> Login
-                  </Link>
+          {/* View Toggle & Filters */}
+          <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+            {/* View Mode Toggle */}
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-[var(--border)]">
+              <button
+                onClick={() => setViewMode("feed")}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                  viewMode === "feed"
+                    ? "bg-[var(--card)] shadow-sm"
+                    : "text-[var(--muted)] hover:text-[var(--foreground)]"
                 )}
-              </div>
+              >
+                <List className="w-4 h-4" />
+                Feed
+              </button>
+              <button
+                onClick={() => setViewMode("map")}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                  viewMode === "map"
+                    ? "bg-[var(--card)] shadow-sm"
+                    : "text-[var(--muted)] hover:text-[var(--foreground)]"
+                )}
+              >
+                <MapIcon className="w-4 h-4" />
+                Map
+              </button>
             </div>
 
-            {reports.length === 0 ? (
-              <div className="text-center py-10 text-neutral-500">
-                <p>No reports yet. Be the first!</p>
-              </div>
-            ) : (
-              reports.map(report => (
-                <ReportCard key={report.id} report={report} />
-              ))
-            )}
+            {/* Category Filters */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar">
+              <button
+                onClick={() => setSelectedCategory(null)}
+                className={cn(
+                  "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                  !selectedCategory
+                    ? "bg-[var(--primary)] text-white"
+                    : "bg-[var(--border)] hover:bg-[var(--primary)]/10"
+                )}
+              >
+                All
+              </button>
+              {categories.slice(0, 5).map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={cn(
+                    "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                    selectedCategory === cat
+                      ? "bg-[var(--primary)] text-white"
+                      : "bg-[var(--border)] hover:bg-[var(--primary)]/10"
+                  )}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Mobile Floating Toggle for Map */}
-          <button
-            onClick={() => setViewMode("map")}
-            className="md:hidden fixed bottom-20 left-1/2 -translate-x-1/2 bg-neutral-900 text-white px-4 py-2 rounded-full shadow-lg font-medium z-10 flex items-center gap-2"
-          >
-            <MapIcon className="w-4 h-4" /> Show Map
-          </button>
+          {/* Content Grid */}
+          <div className="grid md:grid-cols-2 gap-6">
+
+            {/* Left: Map */}
+            <div className={cn(
+              "h-[400px] md:h-[600px] rounded-2xl overflow-hidden glass-card p-0",
+              viewMode === "feed" && "hidden md:block"
+            )}>
+              <MapView
+                reports={filteredReports}
+                center={defaultCenter}
+                onMarkerClick={handleLocateReport}
+              />
+            </div>
+
+            {/* Right: Feed */}
+            <div className={cn(
+              "space-y-4",
+              viewMode === "map" && "hidden md:block"
+            )}>
+              {filteredReports.length === 0 ? (
+                <div className="glass-card p-8 text-center">
+                  <div className="text-6xl mb-4">📭</div>
+                  <h3 className="font-bold text-lg mb-2">No Reports Yet</h3>
+                  <p className="text-[var(--muted)] text-sm">
+                    Be the first to report an issue in your area!
+                  </p>
+                </div>
+              ) : (
+                filteredReports.map((report, index) => (
+                  <div key={report.id} style={{ animationDelay: `${index * 50}ms` }}>
+                    <ReportCard
+                      report={report}
+                      onLocate={handleLocateReport}
+                    />
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
+      </main>
 
-      </div>
-
-      {/* Floating Action Button (New Report) */}
+      {/* Floating Action Button */}
       <button
         onClick={() => setIsReportModalOpen(true)}
-        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-black dark:bg-white text-white dark:text-black w-14 h-14 rounded-full shadow-xl shadow-black/20 flex items-center justify-center z-50 hover:scale-110 transition-transform"
+        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 w-16 h-16 rounded-2xl btn-primary shadow-xl shadow-emerald-500/30 flex items-center justify-center z-50 animate-pulse-glow"
       >
-        <Plus className="w-6 h-6" />
+        <Plus className="w-7 h-7" />
       </button>
 
       {/* Mobile Bottom Nav */}
-      <div className="md:hidden h-16 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 flex items-center justify-around z-20 shrink-0">
-        <button className="flex flex-col items-center gap-1 text-xs font-medium text-neutral-900 dark:text-neutral-50">
-          <List className="w-5 h-5" />
-          Feed
-        </button>
-        <button className="flex flex-col items-center gap-1 text-xs font-medium text-neutral-400">
-          <User className="w-5 h-5" />
-          Profile
-        </button>
-      </div>
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass-card rounded-t-2xl rounded-b-none">
+        <div className="flex items-center justify-around h-16">
+          <button
+            onClick={() => setViewMode("feed")}
+            className={cn(
+              "flex flex-col items-center gap-1 text-xs font-medium transition-colors",
+              viewMode === "feed" ? "text-[var(--primary)]" : "text-[var(--muted)]"
+            )}
+          >
+            <List className="w-5 h-5" />
+            Feed
+          </button>
+          <button
+            onClick={() => setViewMode("map")}
+            className={cn(
+              "flex flex-col items-center gap-1 text-xs font-medium transition-colors",
+              viewMode === "map" ? "text-[var(--primary)]" : "text-[var(--muted)]"
+            )}
+          >
+            <MapIcon className="w-5 h-5" />
+            Map
+          </button>
+          <button className="flex flex-col items-center gap-1 text-xs font-medium text-[var(--muted)]">
+            <TrendingUp className="w-5 h-5" />
+            Analytics
+          </button>
+        </div>
+      </nav>
 
-      <NewReportModal isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} />
+      {/* Report Modal */}
+      <NewReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+      />
     </div>
   );
 }

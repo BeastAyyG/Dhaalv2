@@ -1,0 +1,104 @@
+{
+    "common": {
+        "appName": "ढाल",
+        "tagline": "AI-संचालित नागरिक रिपोर्टिंग",
+        "login": "लॉगिन",
+        "logout": "लॉगआउट",
+        "submit": "जमा करें",
+        "cancel": "रद्द करें",
+        "save": "सहेजें",
+        "delete": "हटाएं",
+        "edit": "संपादित करें",
+        "view": "देखें",
+        "close": "बंद करें",
+        "loading": "लोड हो रहा है...",
+        "error": "त्रुटि",
+        "success": "सफल"
+    },
+    "nav": {
+        "feed": "फ़ीड",
+        "map": "नक्शा",
+        "analytics": "विश्लेषण",
+        "officer": "अधिकारी पैनल",
+        "profile": "प्रोफ़ाइल"
+    },
+    "home": {
+        "title": "सामुदायिक रिपोर्ट",
+        "subtitle": "समस्याएं रिपोर्ट की गईं",
+        "open": "खुली",
+        "resolved": "हल",
+        "noReports": "अभी तक कोई रिपोर्ट नहीं",
+        "noReportsDesc": "अपने क्षेत्र में पहली समस्या रिपोर्ट करें!",
+        "viewOnMap": "नक्शे पर देखें",
+        "totalReports": "कुल रिपोर्ट",
+        "openIssues": "खुले मुद्दे",
+        "filter": {
+            "all": "सभी",
+            "pothole": "गड्ढा",
+            "garbage": "कूड़ा",
+            "streetLight": "स्ट्रीट लाइट",
+            "waterLeak": "पानी रिसाव"
+        }
+    },
+    "report": {
+        "title": "समस्या रिपोर्ट करें",
+        "takePhoto": "फोटो लेने के लिए टैप करें",
+        "analyzing": "AI दृश्य का विश्लेषण कर रहा है...",
+        "detected": "पहचाना गया",
+        "severity": "गंभीरता",
+        "description": "विवरण",
+        "submitReport": "रिपोर्ट जमा करें",
+        "xpReward": "+50 XP",
+        "duplicateTitle": "धोखाधड़ी अलर्ट!",
+        "duplicateDesc": "यह फोटो मौजूदा रिपोर्ट से मेल खाती है।",
+        "reportAnyway": "फिर भी रिपोर्ट करें",
+        "aiConfidence": "AI विश्वास"
+    },
+    "officer": {
+        "title": "अधिकारी डैशबोर्ड",
+        "subtitle": "नागरिक रिपोर्ट प्रबंधित और हल करें",
+        "search": "रिपोर्ट खोजें...",
+        "inProgress": "प्रगति में",
+        "location": "स्थान",
+        "upvotes": "अपवोट",
+        "date": "तारीख",
+        "actions": "कार्यवाही"
+    },
+    "analytics": {
+        "title": "विश्लेषण डैशबोर्ड",
+        "subtitle": "नागरिक रिपोर्टिंग के रुझान ट्रैक करें",
+        "resolutionRate": "समाधान दर",
+        "avgResolutionTime": "औसत समाधान समय",
+        "activeCitizens": "सक्रिय नागरिक",
+        "reportsByCategory": "श्रेणी अनुसार रिपोर्ट",
+        "weeklyReports": "साप्ताहिक रिपोर्ट",
+        "topAreas": "शीर्ष रिपोर्ट क्षेत्र"
+    },
+    "profile": {
+        "level": "स्तर",
+        "rank": "रैंक",
+        "badges": "बैज",
+        "leaderboard": "लीडरबोर्ड",
+        "reports": "रिपोर्ट",
+        "upvotes": "अपवोट",
+        "xpToNext": "अगले स्तर तक XP"
+    },
+    "badges": {
+        "firstReport": "पहली रिपोर्ट",
+        "activeCitizen": "सक्रिय नागरिक",
+        "guardian": "संरक्षक",
+        "champion": "चैंपियन",
+        "influencer": "प्रभावशाली",
+        "problemSolver": "समस्या समाधानकर्ता"
+    },
+    "status": {
+        "open": "खुला",
+        "inProgress": "प्रगति में",
+        "resolved": "हल"
+    },
+    "severity": {
+        "low": "कम",
+        "medium": "मध्यम",
+        "critical": "गंभीर"
+    }
+}
