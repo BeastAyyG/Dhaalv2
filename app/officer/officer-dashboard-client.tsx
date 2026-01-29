@@ -41,7 +41,7 @@ export function OfficerDashboardClient({ initialReports }: OfficerDashboardClien
         <div className="min-h-screen bg-[var(--bg-deep)]">
             <Header />
 
-            <main className="pt-40 pb-8 px-4">
+            <main className="pt-8 pb-8 px-4">
                 <div className="max-w-7xl mx-auto">
 
                     <header className="mb-6">
