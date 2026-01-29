@@ -5,11 +5,12 @@ import { Mic, Square, Loader2, Globe, Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface VoiceInputProps {
-    onTranscript: (text: string) => void;
+    onTranscript?: (text: string) => void;
     onCategoryDetect?: (category: string) => void;
+    onRecordingComplete?: (text: string, language: string) => void;
 }
 
-export function VoiceInput({ onTranscript, onCategoryDetect }: VoiceInputProps) {
+export function VoiceInput({ onTranscript, onCategoryDetect, onRecordingComplete }: VoiceInputProps) {
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState("");
     const [language, setLanguage] = useState<"en-US" | "hi-IN">("en-US");
@@ -52,7 +53,12 @@ export function VoiceInput({ onTranscript, onCategoryDetect }: VoiceInputProps) 
         if (isListening) {
             recognitionRef.current.stop();
             setIsListening(false);
+            // Trigger complete with the FINAL transcript
+            onRecordingComplete?.(transcript, language);
         } else {
+            // Reset for new session
+            setTranscript("");
+            recognitionRef.current.lang = language;
             recognitionRef.current.start();
             setIsListening(true);
 
@@ -63,7 +69,7 @@ export function VoiceInput({ onTranscript, onCategoryDetect }: VoiceInputProps) 
                     currentTranscript += event.results[i][0].transcript;
                 }
                 setTranscript(currentTranscript);
-                onTranscript(currentTranscript);
+                onTranscript?.(currentTranscript);
 
                 const category = detectCategory(currentTranscript);
                 if (category && onCategoryDetect) {

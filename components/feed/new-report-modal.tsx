@@ -10,6 +10,8 @@ import { submitReportAction } from "@/app/actions/submit-report";
 import { checkDuplicateAction, type DuplicateCheckResult } from "@/app/actions/check-duplicate";
 import type { AnalysisResult } from "@/lib/types";
 import { VoiceInput } from "@/components/ui/voice-input";
+import { useAuth } from "@/lib/auth-context";
+import { translateAction } from "@/app/actions/translate";
 
 interface NewReportModalProps {
     isOpen: boolean;
@@ -17,6 +19,7 @@ interface NewReportModalProps {
 }
 
 export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
+    const { user } = useAuth(); // Get user for auth/mock auth
     const [step, setStep] = useState<"capture" | "analyzing" | "details" | "duplicate">("capture");
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
@@ -246,16 +249,29 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                 />
 
                                 <VoiceInput
-                                    onTranscript={(text) => {
-                                        // Append to existing text
+                                    onTranscript={() => {
+                                        // Optional: Visual feedback if needed, but VoiceInput handles preview
+                                    }}
+                                    onRecordingComplete={async (text, lang) => {
+                                        if (!text.trim()) return;
+
+                                        let finalText = text;
+                                        // Auto-translate Hindi to English
+                                        if (lang === "hi-IN") {
+                                            try {
+                                                finalText = await translateAction(text);
+                                            } catch (e) {
+                                                console.error("Translation failed", e);
+                                            }
+                                        }
+
                                         setAnalysis(prev => prev ? ({
                                             ...prev,
-                                            description: prev.description + " " + text
+                                            description: (prev.description + " " + finalText).trim()
                                         }) : null);
                                     }}
                                     onCategoryDetect={(cat) => {
                                         console.log("Voice detected category:", cat);
-                                        // Optional: Update category if needed, but AI image analysis is primary
                                     }}
                                 />
                             </div>
@@ -269,11 +285,14 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                     const formData = new FormData();
                                     formData.append("category", analysis.category);
                                     formData.append("severity", analysis.severityScore.toString());
-                                    // Use state value instead of querySelector
                                     formData.append("description", analysis.description);
                                     formData.append("lat", location.lat.toString());
                                     formData.append("lng", location.lng.toString());
                                     formData.append("image", imageFile);
+                                    // Attach User ID for Auth/Mock Auth
+                                    if (user?.id) {
+                                        formData.append("user_id", user.id);
+                                    }
 
                                     await submitReportAction(null, formData);
                                     setIsSubmitting(false);

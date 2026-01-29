@@ -29,6 +29,8 @@ export async function submitReportAction(
     const lat = parseFloat(formData.get("lat") as string);
     const lng = parseFloat(formData.get("lng") as string);
     const imageFile = formData.get("image") as File;
+    // Allow client to pass user_id (needed for Mock Auth demo)
+    const userId = (formData.get("user_id") as string) || null;
 
     // 1. Handle Image - Use Supabase Storage (not base64 to avoid timeouts)
     let imageUrl = "";
@@ -76,6 +78,7 @@ export async function submitReportAction(
     const { error } = await supabase
         .from("reports")
         .insert({
+            user_id: userId,
             category,
             description,
             severity,
