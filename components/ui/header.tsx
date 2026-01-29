@@ -104,7 +104,7 @@ export function Header() {
                         ) : (
                             <Link href="/login" className="btn-primary text-sm py-2 px-4">
                                 <LogIn className="w-4 h-4" aria-hidden="true" />
-                                <span className="hidden sm:inline">Login</span>
+                                <span className="hidden sm:inline">Staff Login</span>
                             </Link>
                         )}
 

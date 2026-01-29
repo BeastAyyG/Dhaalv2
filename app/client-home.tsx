@@ -76,7 +76,7 @@ export default function ClientHome({ reports }: ClientHomeProps) {
     <div className="min-h-screen bg-[var(--bg-deep)]">
       <Header />
 
-      <main className="pt-[5.5rem] pb-24 md:pb-8">
+      <main className="pt-40 pb-24 md:pb-8">
         {/* Emergency Banner */}
         {emergencies.length > 0 && (
           <div className="mb-6">
