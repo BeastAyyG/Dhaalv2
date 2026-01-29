@@ -4,12 +4,17 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import type { User } from "@supabase/supabase-js";
 
+// Mock user for demo purposes
+const MOCK_USER_KEY = "dhaal_mock_user";
+
 interface AuthContextType {
     user: User | null;
     loading: boolean;
     signInWithOTP: (phone: string) => Promise<{ error: Error | null }>;
     verifyOTP: (phone: string, token: string) => Promise<{ error: Error | null }>;
     signOut: () => Promise<void>;
+    // Demo mode helpers
+    setMockUser: (aadhaar: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,8 +24,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check current session
-        const checkSession = async () => {
+        const initAuth = async () => {
+            // Check for mock user first (demo mode)
+            if (typeof window !== "undefined") {
+                const mockUserData = localStorage.getItem(MOCK_USER_KEY);
+                if (mockUserData) {
+                    try {
+                        const mockUser = JSON.parse(mockUserData) as User;
+                        setUser(mockUser);
+                        setLoading(false);
+                        return;
+                    } catch {
+                        localStorage.removeItem(MOCK_USER_KEY);
+                    }
+                }
+            }
+
+            // Check Supabase session
             if (!supabase) {
                 setLoading(false);
                 return;
@@ -31,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setLoading(false);
         };
 
-        checkSession();
+        initAuth();
 
         // Listen for auth changes
         if (supabase) {
@@ -64,13 +84,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const signOut = async () => {
-        if (!supabase) return;
-        await supabase.auth.signOut();
+        // Clear mock user
+        localStorage.removeItem(MOCK_USER_KEY);
+
+        if (supabase) {
+            await supabase.auth.signOut();
+        }
         setUser(null);
     };
 
+    // Set mock user for demo mode
+    const setMockUser = (aadhaar: string) => {
+        const mockUser = {
+            id: `mock-${aadhaar.replace(/\D/g, "")}`,
+            email: `user${aadhaar.slice(-4)}@dhaal.demo`,
+            phone: `+91${aadhaar.replace(/\D/g, "").slice(0, 10)}`,
+            created_at: new Date().toISOString(),
+            app_metadata: {},
+            user_metadata: {
+                aadhaar_last4: aadhaar.slice(-4),
+            },
+            aud: "authenticated",
+        } as unknown as User;
+
+        localStorage.setItem(MOCK_USER_KEY, JSON.stringify(mockUser));
+        setUser(mockUser);
+    };
+
     return (
-        <AuthContext.Provider value={{ user, loading, signInWithOTP, verifyOTP, signOut }}>
+        <AuthContext.Provider value={{ user, loading, signInWithOTP, verifyOTP, signOut, setMockUser }}>
             {children}
         </AuthContext.Provider>
     );
@@ -86,7 +128,9 @@ export function useAuth() {
             signInWithOTP: async () => ({ error: null }),
             verifyOTP: async () => ({ error: null }),
             signOut: async () => { },
+            setMockUser: () => { },
         };
     }
     return context;
 }
+

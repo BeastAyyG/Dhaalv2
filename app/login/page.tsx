@@ -16,7 +16,7 @@ export default function LoginPage() {
     const [error, setError] = useState("");
     const [maskedMobile, setMaskedMobile] = useState("");
 
-    const { signInWithOTP, verifyOTP } = useAuth();
+    const { signInWithOTP, verifyOTP, setMockUser } = useAuth();
     const router = useRouter();
 
     // Format Aadhaar as XXXX-XXXX-XXXX
@@ -94,13 +94,15 @@ export default function LoginPage() {
         try {
             const { error } = await verifyOTP(mockPhone, otp);
             if (error) {
-                // Demo mode: show success anyway for demo
-                console.log("Demo mode: Verification simulation");
+                // Demo mode: Use mock user instead
+                console.log("Demo mode: Using mock user");
+                setMockUser(aadhaar);
             }
             setStep("success");
             setTimeout(() => router.push("/"), 2000);
         } catch {
-            // Demo mode: show success
+            // Demo mode: Use mock user
+            setMockUser(aadhaar);
             setStep("success");
             setTimeout(() => router.push("/"), 2000);
         }

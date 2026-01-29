@@ -35,6 +35,7 @@ export default function ReportDetailClient({ report, initialComments }: ReportDe
             setComments(prev => [...prev, {
                 id: crypto.randomUUID(),
                 report_id: report.id,
+                user_id: "anonymous",
                 user_name: userName || "Anonymous",
                 content: newComment,
                 created_at: new Date().toISOString()
