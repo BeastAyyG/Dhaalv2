@@ -336,10 +336,7 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                             <button
                                 disabled={isSubmitting}
                                 onClick={async () => {
-                                    if (!location) {
-                                        alert("Location is required. Please enable GPS.");
-                                        return;
-                                    }
+                                    const finalLocation = location || { lat: 28.6139, lng: 77.2090 }; // Default to New Delhi if GPS blocked
                                     setIsSubmitting(true);
 
                                     const formData = new FormData();
@@ -347,8 +344,8 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                     formData.append("severity", analysis.severityScore.toString());
                                     // Use state value instead of querySelector
                                     formData.append("description", analysis.description);
-                                    formData.append("lat", location.lat.toString());
-                                    formData.append("lng", location.lng.toString());
+                                    formData.append("lat", finalLocation.lat.toString());
+                                    formData.append("lng", finalLocation.lng.toString());
                                     if (imageFile) {
                                         formData.append("image", imageFile);
                                     }

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase-server";
 import type { Report } from "@/lib/types";
 
 export const revalidate = 0; // Disable cache for real-time feel
+export const dynamic = "force-dynamic";
 
 // MOCK MODE: Set to true during Supabase outage to bypass DB calls
 const MOCK_MODE = false; // Supabase integration enabled

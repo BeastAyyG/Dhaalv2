@@ -63,13 +63,13 @@
         "upvotes": "अपवोट",
         "date": "तारीख",
         "actions": "कार्यवाही",
-        "updateStatus": "Update Status",
-        "setPriority": "Set Priority",
+        "updateStatus": "स्थिति अपडेट करें",
+        "setPriority": "प्राथमिकता निर्धारित करें",
         "priority": {
-            "urgent": "Urgent",
-            "high": "High",
-            "normal": "Normal",
-            "low": "Low"
+            "urgent": "अति आवश्यक",
+            "high": "उच्च",
+            "normal": "सामान्य",
+            "low": "कम"
         }
     },
     "analytics": {

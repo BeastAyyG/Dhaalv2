@@ -4,14 +4,14 @@ import Link from "next/link";
 import { useTheme } from "@/lib/theme-context";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n";
-import { Sun, Moon, LogIn, LogOut, Shield, BarChart3, Menu, Globe, Zap, User, X } from "lucide-react";
+import { Sun, Moon, LogIn, Shield, BarChart3, Menu, Globe, Zap, User, X } from "lucide-react";
 import { useState } from "react";
 // import { cn } from "@/lib/utils";
 import { NotificationsDropdown } from "@/components/ui/notifications-dropdown";
 
 export function Header() {
     const { theme, toggleTheme } = useTheme();
-    const { user, signOut } = useAuth();
+    const { user } = useAuth();
     const { language, setLanguage } = useI18n();
     const [menuOpen, setMenuOpen] = useState(false);
 

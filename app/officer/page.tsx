@@ -7,15 +7,10 @@ export const dynamic = "force-dynamic";
 export default async function OfficerPage() {
     const supabase = createClient();
 
-    // Check auth
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-        // In a real app, we'd check for specific officer role here
-        // redirect("/login");
-    }
+
 
     // Fetch reports
-    const { data: reports, error } = await supabase
+    const { data: reports } = await supabase
         .from("reports")
         .select("*")
         .order("created_at", { ascending: false });
