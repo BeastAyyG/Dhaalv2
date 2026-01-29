@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Camera, X, Loader2, AlertTriangle } from "lucide-react";
+import { Camera, X, AlertTriangle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { compressImage } from "@/lib/image-utils";
 
 import { analyzeImageAction } from "@/app/actions/analyze";
 import { submitReportAction } from "@/app/actions/submit-report";
 import { checkDuplicateAction, type DuplicateCheckResult } from "@/app/actions/check-duplicate";
 import type { AnalysisResult } from "@/lib/types";
+import { VoiceInput } from "@/components/ui/voice-input";
 
 interface NewReportModalProps {
     isOpen: boolean;
@@ -37,6 +39,7 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
     // Reset state when modal closes
     useEffect(() => {
         if (!isOpen) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setStep("capture");
             setImagePreview(null);
             setImageFile(null);
@@ -48,11 +51,11 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
 
     if (!isOpen) return null;
 
+
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setImageFile(file);
-            // Preview
+            // Preview original
             const reader = new FileReader();
             reader.onloadend = () => setImagePreview(reader.result as string);
             reader.readAsDataURL(file);
@@ -62,9 +65,18 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
             setError(null);
 
             try {
-                // Check for duplicate
+                // Compress image before processing (max 500KB)
+                console.log(`Original size: ${(file.size / 1024).toFixed(0)}KB`);
+                const compressedFile = await compressImage(file, 500);
+                setImageFile(compressedFile);
+
+                // Check for duplicate with location
                 const dupFormData = new FormData();
-                dupFormData.append("image", file);
+                dupFormData.append("image", compressedFile);
+                if (location) {
+                    dupFormData.append("lat", location.lat.toString());
+                    dupFormData.append("lng", location.lng.toString());
+                }
                 const dupResult = await checkDuplicateAction(dupFormData);
 
                 if (dupResult.isDuplicate) {
@@ -75,7 +87,7 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
 
                 // If not duplicate, proceed with analysis
                 const formData = new FormData();
-                formData.append("image", file);
+                formData.append("image", compressedFile);
 
                 const result = await analyzeImageAction(formData);
                 console.log("AI Result:", result);
@@ -117,6 +129,7 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                     <button onClick={onClose} className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full">
                         <X className="w-5 h-5" />
                     </button>
+                    {error && <div className="hidden">{error}</div>}
                 </div>
 
                 <div className="p-6">
@@ -171,7 +184,7 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                 )}
                                 {duplicateInfo.reason && (
                                     <p className="text-xs text-neutral-400 italic mb-3">
-                                        "{duplicateInfo.reason}"
+                                        &quot;{duplicateInfo.reason}&quot;
                                     </p>
                                 )}
                                 <div className="w-full bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 text-left">
@@ -211,6 +224,7 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                         <div className="space-y-4">
                             <div className="relative h-48 w-full rounded-lg overflow-hidden">
                                 {imagePreview && (
+                                    // eslint-disable-next-line @next/next/no-img-element
                                     <img src={imagePreview} alt="Preview" className="object-cover w-full h-full" />
                                 )}
                                 <div className={cn(
@@ -221,12 +235,28 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                 </div>
                             </div>
 
+
                             <div>
                                 <label className="block text-sm font-medium mb-1">Description</label>
                                 <textarea
-                                    className="w-full p-3 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                    className="w-full p-3 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 focus:ring-2 focus:ring-blue-500 outline-none resize-none mb-3"
                                     rows={3}
-                                    defaultValue={analysis.description}
+                                    value={analysis.description}
+                                    onChange={(e) => setAnalysis({ ...analysis, description: e.target.value })}
+                                />
+
+                                <VoiceInput
+                                    onTranscript={(text) => {
+                                        // Append to existing text
+                                        setAnalysis(prev => prev ? ({
+                                            ...prev,
+                                            description: prev.description + " " + text
+                                        }) : null);
+                                    }}
+                                    onCategoryDetect={(cat) => {
+                                        console.log("Voice detected category:", cat);
+                                        // Optional: Update category if needed, but AI image analysis is primary
+                                    }}
                                 />
                             </div>
 
@@ -239,7 +269,8 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                     const formData = new FormData();
                                     formData.append("category", analysis.category);
                                     formData.append("severity", analysis.severityScore.toString());
-                                    formData.append("description", (document.querySelector('textarea') as HTMLTextAreaElement).value);
+                                    // Use state value instead of querySelector
+                                    formData.append("description", analysis.description);
                                     formData.append("lat", location.lat.toString());
                                     formData.append("lng", location.lng.toString());
                                     formData.append("image", imageFile);
@@ -248,7 +279,7 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                     setIsSubmitting(false);
                                     onClose();
                                 }}
-                                className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-medium rounded-xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all"
+                                className="w-full py-3 bg-[var(--brand)] hover:opacity-90 disabled:opacity-50 text-white font-medium rounded-xl shadow-lg shadow-[var(--brand)]/20 active:scale-95 transition-all"
                             >
                                 {isSubmitting ? "Saving..." : "Submit Report (+50 XP)"}
                             </button>

@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase-server";
 import { revalidatePath } from "next/cache";
 
 // Simple hash function for image comparison
@@ -20,7 +20,7 @@ async function generateImageHash(file: File): Promise<string> {
 }
 
 export async function submitReportAction(
-    prevState: any,
+    prevState: { message: string; success?: boolean } | null,
     formData: FormData
 ) {
     const category = formData.get("category") as string;
@@ -30,26 +30,48 @@ export async function submitReportAction(
     const lng = parseFloat(formData.get("lng") as string);
     const imageFile = formData.get("image") as File;
 
-    // 1. Handle Image
-    // Ideally: Upload to Supabase Storage.
-    // Prototype: Convert to Base64 String and store in Text Column
+    // 1. Handle Image - Use Supabase Storage (not base64 to avoid timeouts)
     let imageUrl = "";
     let imageHash = "";
 
+    const supabase = createClient();
+    if (!supabase) {
+        console.warn("Supabase not configured. Mock success.");
+        return { success: true, message: "Report processed (Mock)" };
+    }
+
     if (imageFile && imageFile.size > 0) {
-        const arrayBuffer = await imageFile.arrayBuffer();
-        const base64 = Buffer.from(arrayBuffer).toString("base64");
-        imageUrl = `data:${imageFile.type};base64,${base64}`;
+        // Generate unique filename
+        const fileExt = imageFile.name.split('.').pop() || 'jpg';
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `reports/${fileName}`;
+
+        // Upload to Supabase Storage
+        const { error: uploadError } = await supabase
+            .storage
+            .from("report-images")
+            .upload(filePath, imageFile, {
+                cacheControl: "3600",
+                upsert: false
+            });
+
+        if (uploadError) {
+            console.error("Upload error:", uploadError);
+            // Fallback: store smaller thumbnail or skip image
+            imageUrl = "";
+        } else {
+            // Get public URL
+            const { data: urlData } = supabase.storage
+                .from("report-images")
+                .getPublicUrl(filePath);
+            imageUrl = urlData.publicUrl;
+        }
 
         // Generate hash for duplicate detection
         imageHash = await generateImageHash(imageFile);
     }
 
     // 2. Insert into DB
-    if (!supabase) {
-        console.warn("Supabase not configured. Mock success.");
-        return { success: true, message: "Report processed (Mock)" };
-    }
 
     const { error } = await supabase
         .from("reports")

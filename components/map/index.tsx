@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+// import { useMemo } from "react";
 
 export const MapView = dynamic(
     () => import("./map-view"),

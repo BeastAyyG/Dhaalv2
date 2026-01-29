@@ -65,3 +65,49 @@ create policy "Users can read own data"
 create policy "Users can update own data"
     on users for update
     using ( auth.uid() = id );
+
+-- PHASE 3: COMMENTS SYSTEM
+-- Create comments table
+create table if not exists comments (
+  id uuid default gen_random_uuid() primary key,
+  report_id uuid references reports(id) on delete cascade not null,
+  user_id uuid references users(id) on delete set null,
+  user_name text default 'Anonymous',
+  content text not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Index for fast comment lookups by report
+create index if not exists idx_comments_report_id on comments(report_id);
+
+-- Enable RLS for comments
+alter table comments enable row level security;
+
+-- Comments policies
+create policy "Comments are viewable by everyone"
+  on comments for select
+  using ( true );
+
+create policy "Anyone can insert comments"
+  on comments for insert
+  with check ( true );
+
+-- =============================================
+-- STORAGE BUCKET SETUP
+-- =============================================
+-- Run this AFTER creating a bucket called 'report-images' in your Supabase Dashboard
+
+-- Allow public read access to report images
+create policy "Public read access for report images"
+  on storage.objects for select
+  using (bucket_id = 'report-images');
+
+-- Allow anonymous uploads to report-images bucket
+create policy "Anyone can upload report images"
+  on storage.objects for insert
+  with check (bucket_id = 'report-images');
+
+-- Allow updates (for migrations)
+create policy "Anyone can update report images"
+  on storage.objects for update
+  using (bucket_id = 'report-images');

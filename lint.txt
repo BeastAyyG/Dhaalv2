@@ -1,0 +1,61 @@
+﻿
+> web@0.1.0 lint
+> eslint
+
+
+C:\Users\500ka\OneDrive\Desktop\Dhaal\web\app\test\page.tsx
+  7:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\500ka\OneDrive\Desktop\Dhaal\web\components\feed\new-report-modal.tsx
+    4:21  warning  'Loader2' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+   22:12  warning  'error' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   40:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\500ka\OneDrive\Desktop\Dhaal\web\components\feed\new-report-modal.tsx:40:13
+  38 |     useEffect(() => {
+  39 |         if (!isOpen) {
+> 40 |             setStep("capture");
+     |             ^^^^^^^ Avoid calling setState() directly within an effect
+  41 |             setImagePreview(null);
+  42 |             setImageFile(null);
+  43 |             setAnalysis(null);  react-hooks/set-state-in-effect
+  174:41  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react/no-unescaped-entities
+  174:64  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react/no-unescaped-entities
+  214:37  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @next/next/no-img-element
+
+C:\Users\500ka\OneDrive\Desktop\Dhaal\web\components\feed\report-card.tsx
+  24:37  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\500ka\OneDrive\Desktop\Dhaal\web\components\feed\report-card.tsx:24:37
+  22 |
+  23 |     const timeAgo = (date: string) => {
+> 24 |         const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+     |                                     ^^^^^^^^^^ Cannot call impure function
+  25 |         if (seconds < 60) return "just now";
+  26 |         if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  27 |         if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;  react-hooks/purity
+  36:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @next/next/no-img-element
+
+C:\Users\500ka\OneDrive\Desktop\Dhaal\web\lib\gamification.ts
+  1:10  warning  'Badge' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\500ka\OneDrive\Desktop\Dhaal\web\lib\i18n\index.tsx
+  27:9  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+
+C:\Users\500ka\OneDrive\Desktop\Dhaal\web\lib\notifications.ts
+  42:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\500ka\OneDrive\Desktop\Dhaal\web\lib\theme-context.tsx
+  22:9  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+
+Γ£û 13 problems (6 errors, 7 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
+

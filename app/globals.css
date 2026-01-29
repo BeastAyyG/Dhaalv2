@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
 
 /* ========================================
    DHAAL DESIGN SYSTEM - OLED Optimized
@@ -687,4 +687,83 @@ h6 {
   body {
     font-size: 0.9375rem;
   }
+}
+
+/* ========================================
+   EMERGENCY ALERT ANIMATIONS
+   ======================================== */
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+/* Emergency card glow for critical reports */
+.emergency-glow {
+  animation: emergency-pulse 2s ease-in-out infinite;
+  box-shadow:
+    0 0 20px rgba(239, 68, 68, 0.4),
+    0 0 40px rgba(239, 68, 68, 0.2),
+    inset 0 0 20px rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.6) !important;
+}
+
+@keyframes emergency-pulse {
+
+  0%,
+  100% {
+    box-shadow:
+      0 0 20px rgba(239, 68, 68, 0.4),
+      0 0 40px rgba(239, 68, 68, 0.2);
+  }
+
+  50% {
+    box-shadow:
+      0 0 30px rgba(239, 68, 68, 0.6),
+      0 0 60px rgba(239, 68, 68, 0.3);
+  }
+}
+
+/* High priority card styling */
+.high-priority-card {
+  border-left: 4px solid #F97316;
+}
+
+.critical-card {
+  border-left: 4px solid #EF4444;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, transparent 50%);
+}
+
+/* Shimmer animation for news banner */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Hide scrollbar for emergency cards */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { Header } from "@/components/ui/header";
-import { SeverityBadge, StatusBadge, SkeletonRow } from "@/components/ui/badges";
+import { SeverityBadge, StatusBadge } from "@/components/ui/badges";
 import { ReportActions } from "@/components/officer/report-actions";
 import {
     Search, CheckCircle, Clock, AlertTriangle,
-    MapPin, Eye, TrendingUp, FileText
+    MapPin, TrendingUp, FileText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Report } from "@/lib/types";

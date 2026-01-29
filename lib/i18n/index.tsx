@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useSyncExternalStore } from "react";
 import en from "./en.json";
 import hi from "./hi.json";
 
@@ -17,17 +17,30 @@ const translations: Record<Language, Translations> = { en, hi };
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-    const [language, setLanguageState] = useState<Language>("en");
-    const [mounted, setMounted] = useState(false);
+// SSR-safe subscription for hydration
+function subscribe(callback: () => void) {
+    window.addEventListener("storage", callback);
+    return () => window.removeEventListener("storage", callback);
+}
 
+function getSnapshot(): Language {
+    if (typeof window === "undefined") return "en";
+    const stored = localStorage.getItem("dhaal-lang");
+    return stored === "hi" ? "hi" : "en";
+}
+
+function getServerSnapshot(): Language {
+    return "en";
+}
+
+export function I18nProvider({ children }: { children: React.ReactNode }) {
+    const storedLang = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+    const [language, setLanguageState] = useState<Language>(storedLang);
+
+    // Sync when external storage changes
     useEffect(() => {
-        setMounted(true);
-        const stored = localStorage.getItem("dhaal-lang") as Language | null;
-        if (stored && (stored === "en" || stored === "hi")) {
-            setLanguageState(stored);
-        }
-    }, []);
+        setLanguageState(storedLang);
+    }, [storedLang]);
 
     const setLanguage = (lang: Language) => {
         setLanguageState(lang);
@@ -35,10 +48,6 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     };
 
     const t = translations[language];
-
-    if (!mounted) {
-        return <>{children}</>;
-    }
 
     return (
         <I18nContext.Provider value={{ language, setLanguage, t }}>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { checkConnection } from "@/app/actions/test-db";
 
 export default function TestPage() {
-    const [status, setStatus] = useState<any>(null);
+    const [status, setStatus] = useState<{ success?: boolean; message: string } | null>(null);
 
     return (
         <div className="p-10 flex flex-col items-center justify-center min-h-screen space-y-4">

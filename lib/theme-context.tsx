@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useSyncExternalStore } from "react";
 
 type Theme = "light" | "dark";
 
@@ -11,37 +11,47 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// SSR-safe subscription for theme
+function subscribe(callback: () => void) {
+    window.addEventListener("storage", callback);
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    mediaQuery.addEventListener("change", callback);
+    return () => {
+        window.removeEventListener("storage", callback);
+        mediaQuery.removeEventListener("change", callback);
+    };
+}
+
+function getSnapshot(): Theme {
+    if (typeof window === "undefined") return "dark";
+    const stored = localStorage.getItem("dhaal-theme") as Theme | null;
+    if (stored) return stored;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function getServerSnapshot(): Theme {
+    return "dark"; // Default to dark for OLED-optimized design
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setTheme] = useState<Theme>("light");
-    const [mounted, setMounted] = useState(false);
+    const storedTheme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+    const [theme, setTheme] = useState<Theme>(storedTheme);
 
+    // Sync when external storage changes
     useEffect(() => {
-        setMounted(true);
-        // Check localStorage or system preference
-        const stored = localStorage.getItem("dhaal-theme") as Theme | null;
-        if (stored) {
-            setTheme(stored);
-        } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            setTheme("dark");
-        }
-    }, []);
+        setTheme(storedTheme);
+    }, [storedTheme]);
 
+    // Apply theme to document
     useEffect(() => {
-        if (mounted) {
-            // Apply theme to document
-            document.documentElement.classList.toggle("dark", theme === "dark");
-            localStorage.setItem("dhaal-theme", theme);
-        }
-    }, [theme, mounted]);
+        document.documentElement.classList.toggle("dark", theme === "dark");
+        document.documentElement.classList.toggle("light", theme === "light");
+        localStorage.setItem("dhaal-theme", theme);
+    }, [theme]);
 
     const toggleTheme = () => {
         setTheme((prev) => (prev === "light" ? "dark" : "light"));
     };
-
-    // Prevent flash of wrong theme
-    if (!mounted) {
-        return <>{children}</>;
-    }
 
     return (
         <ThemeContext.Provider value={{ theme, toggleTheme }}>
@@ -54,7 +64,7 @@ export function useTheme() {
     const context = useContext(ThemeContext);
     // Return a default value if context is not available (SSR safety)
     if (!context) {
-        return { theme: "light" as const, toggleTheme: () => { } };
+        return { theme: "dark" as const, toggleTheme: () => { } };
     }
     return context;
 }

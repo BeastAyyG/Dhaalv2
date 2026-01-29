@@ -1,89 +1,65 @@
-# Dhaal Mega Enhancement Plan
+# PLAN: Voice Reporting & Community Defense
 
-## 🎯 Overview
-Transform Dhaal into a premium, feature-complete civic reporting platform with 7 major enhancements.
+## 🎯 Objective
+Empower citizens with accessibility tools (Voice/WhatsApp) and social features (Upvotes/Sharing) to increase report volume and community engagement, maintaining a premium "Dark Mode" aesthetic.
 
----
+## 📦 Features to Build
 
-## 📋 Feature Priority Matrix
+### 1. AI Voice Reporting (Accessibility) 🎙️
+- **Voice Input:** Use browser `SpeechRecognition` API.
+- **Bilingual Support:** 
+  - Detects Hindi words ("Aag", "Sadak", "Pani").
+  - Auto-translates Basic Hindi Intent -> English Category (e.g., "Sadak kharab hai" -> "Pothole").
+- **Auto-Fill:** Text-to-Intent parsing to extract:
+  - Category (Fire/Aag, Pothole/Gaddha)
+  - Location name (if spoken)
+- **UI:** Floating "Mic" button with pulsing animation.
 
-| Phase | Feature | Impact | Effort | Status |
-|-------|---------|--------|--------|--------|
-| 1 | 🎨 UI Redesign | High | Medium | ✅ Done |
-| 1 | 🗺️ Advanced Map | High | Low | ✅ Done |
-| 2 | 👮 Officer Dashboard | High | High | ✅ Done |
-| 2 | 🏆 Gamification | Medium | Medium | ✅ Done |
-| 3 | 📊 Analytics Page | Medium | Medium | ✅ Done |
-| 3 | 🔔 Notifications | Medium | High | ✅ Done |
-| 4 | 🌐 Multi-language | Low | Low | ✅ Done |
+### 2. WhatsApp Integration (Quick Report) 💬
+- **WhatsApp Button:** "Report via WhatsApp" floating action.
+- **Action:** Opens `wa.me/DhaalOfficial?text=I want to report...`
+- **Simulation:** Pre-filled message template.
 
----
+### 3. Community Defense (Social) 🛡️
+- **"Me Too" Upvote:** One-tap verification for reports.
+- **Share Cards:** "Generate Story" button that creates a visually stunning image of the report (using HTML Canvas or CSS screenshot).
+- **Impact Badge:** "50 people verified this" visual indicator.
 
-## 🎨 Phase 1: UI Redesign + Advanced Map (Completed)
-- **GenZ Design System:** Implemented with OLED dark mode, Fira fonts, and glassmorphism.
-- **Components:** `ReportCard`, `SeverityBadge`, `Header`, `GlassCard`.
-- **Pages:** `client-home.tsx` fully redesigned.
+## 🛠️ Tech Stack & Strategy
+- **Frontend:** React (Next.js), Lucide Icons, Browser Speech API.
+- **State Management:** React Context / Local State.
+- **Styling:** Tailwind CSS (Glassmorphism, Neon Accents).
+- **Backend:** Supabase (for Upvote counters).
 
----
+## 📅 Implementation Steps
 
-## 👮 Phase 2: Officer Dashboard + Gamification (Completed)
-- **Dashboard:** Real-time data fetching, filtering, and search.
-- **Actions:** Update status and priority via server actions (`update-report.ts`).
-- **Gamification:** 
-  - `lib/gamification.ts` logic implemented.
-  - `profile/page.tsx` UI with XP, Levels, Badges, Leaderboard.
-  - **Database:** Schema updated to support users, XP, badges.
+### Phase 1: Voice & WhatsApp (Accessibility)
+1. **Create `VoiceRecorder` Component:**
+   - Handle Microphone permissions.
+   - Speech-to-Text visualizer (waveform animation).
+2. **Integrate into `NewReportModal`:**
+   - "Tap to Speak" button filling the description field.
+3. **Add `WhatsAppButton`:**
+   - Fixed side/bottom button for instant external reporting.
 
----
+### Phase 2: Community Features (Social)
+4. **Update `ReportCard`:**
+   - Add `<UpvoteButton />` with animation.
+   - Add `<ShareButton />` triggering native share sheet or clipboard.
+5. **Create `ShareCardGenerator`:**
+   - Hidden UI element that renders the "Instagram Story" layout.
+   - Function to export as image (mock/download).
 
-## 📊 Phase 3: Analytics + Notifications (Completed)
-- **Analytics:** `/analytics` page with Category Distribution, Weekly Trends, and Top Areas.
-- **Notifications:** 
-  - `lib/notifications.ts` for browser notifications.
-  - `NotificationsDropdown` component in Header.
+### Phase 3: Polish & Animation
+6. **Micro-interactions:**
+   - Heart confetti on Upvote.
+   - Pulsing ring on Voice Record.
+   - Slide-in animations for Share sheet.
 
----
-
-## 🌐 Phase 4: Multi-language (Completed)
-- **Infrastructure:** `i18n` context and JSON files (`en.json`, `hi.json`) setup.
-- **UI:** Global language toggle in Header.
-
----
-
-## 🚀 Next Steps (Deployment)
-
-### 1. Database Migration
-Run the contents of `supabase_schema.sql` in your Supabase SQL Editor to create the necessary tables for Gamification and Officer features:
-- `users` table
-- `officer_id` and `priority` columns in `reports`
-
-### 2. Environment Variables
-Ensure `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set in Vercel/Netlify.
-
-### 3. Verify Features
-- **Officer:** Visit `/officer` to see real reports.
-- **Notifications:** Click the bell icon in header.
-- **Gamification:** Check `/profile` for stats (requires adding data to `users` table manually or via auth hooks).
+## 🧪 Verification Plan
+- **Test:** Verify Speech API works on Chrome/Edge.
+- **Test:** Verify WhatsApp link opens correctly.
+- **Test:** Verify Upvote allows 1 vote per session/user.
 
 ---
-
-## 🔧 File Structure Status
-```
-web/
-├── app/
-│   ├── officer/
-│   │   ├── page.tsx (Server Component)
-│   │   └── officer-dashboard-client.tsx (Client Component)
-│   ├── actions/
-│   │   └── update-report.ts
-├── components/
-│   ├── ui/
-│   │   ├── notifications-dropdown.tsx
-│   ├── officer/
-│   │   └── report-actions.tsx
-├── lib/
-│   ├── gamification.ts
-│   ├── notifications.ts
-│   ├── supabase-server.ts
-│   └── types.ts
-```
+**Status:** Waiting for User Approval.

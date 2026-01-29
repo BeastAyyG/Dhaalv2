@@ -39,16 +39,17 @@ export function sendLocalNotification(title: string, body: string, icon?: string
 }
 
 // Mock function to simulate receiving a push notification payload
-export function handlePushPayload(payload: any) {
-    if (payload.type === 'STATUS_UPDATE') {
+export function handlePushPayload(payload: unknown) {
+    const p = payload as { type?: string; reportId?: string; status?: string; badgeName?: string };
+    if (p.type === 'STATUS_UPDATE') {
         sendLocalNotification(
-            `Report Update: ${payload.reportId}`,
-            `Status changed to ${payload.status}`
+            `Report Update: ${p.reportId}`,
+            `Status changed to ${p.status}`
         );
-    } else if (payload.type === 'ACHIEVEMENT') {
+    } else if (p.type === 'ACHIEVEMENT') {
         sendLocalNotification(
             "New Badge Earned! 🏆",
-            `You earned the ${payload.badgeName} badge!`
+            `You earned the ${p.badgeName} badge!`
         );
     }
 }

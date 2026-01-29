@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n";
 import { Sun, Moon, LogIn, LogOut, Shield, BarChart3, Menu, Globe, Zap, User, X } from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+// import { cn } from "@/lib/utils";
 import { NotificationsDropdown } from "@/components/ui/notifications-dropdown";
 
 export function Header() {
@@ -24,7 +24,7 @@ export function Header() {
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
-            <nav className="glass-card-static mx-auto max-w-7xl" role="navigation" aria-label="Main navigation">
+            <nav className="glass-card-static mx-auto max-w-7xl bg-[var(--bg-surface)]/95 shadow-lg" role="navigation" aria-label="Main navigation">
                 <div className="flex items-center justify-between h-14 px-2">
                     {/* Logo */}
                     <Link
@@ -69,10 +69,11 @@ export function Header() {
                         {/* Language Toggle */}
                         <button
                             onClick={() => setLanguage(language === "en" ? "hi" : "en")}
-                            className="btn-icon"
-                            aria-label={`Switch to ${language === "en" ? "Hindi" : "English"}`}
+                            className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-bold border border-[var(--glass-border)] bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] transition-colors min-w-[3rem] justify-center"
+                            aria-label={`Current language: ${language.toUpperCase()}`}
                         >
-                            <Globe className="w-4 h-4" aria-hidden="true" />
+                            {language === "en" ? "EN" : "HI"}
+                            <Globe className="w-3 h-3 text-[var(--text-subtle)]" />
                         </button>
 
                         {/* Theme Toggle */}
@@ -88,15 +89,17 @@ export function Header() {
                             )}
                         </button>
 
-                        {/* Auth Button */}
+                        {/* Auth / Profile */}
                         {user ? (
-                            <button
-                                onClick={() => signOut()}
-                                className="btn-icon text-[var(--error)]"
-                                aria-label="Sign out"
+                            <Link
+                                href="/profile"
+                                className="flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brand-light)] text-white shadow-lg shadow-[var(--brand)]/20 hover:opacity-90 transition-opacity"
+                                aria-label="My Profile"
                             >
-                                <LogOut className="w-4 h-4" aria-hidden="true" />
-                            </button>
+                                <span className="text-sm font-bold">
+                                    {user.email?.charAt(0).toUpperCase() || "U"}
+                                </span>
+                            </Link>
                         ) : (
                             <Link href="/login" className="btn-primary text-sm py-2 px-4">
                                 <LogIn className="w-4 h-4" aria-hidden="true" />

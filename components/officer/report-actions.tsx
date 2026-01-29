@@ -61,6 +61,7 @@ export function ReportActions({ reportId, currentStatus, currentPriority = 'NORM
                     </div>
 
                     <button
+                        disabled={loading}
                         onClick={() => handleStatusChange("OPEN")}
                         className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-[var(--bg-hover)] flex items-center gap-2 transition-colors"
                     >
@@ -69,6 +70,7 @@ export function ReportActions({ reportId, currentStatus, currentPriority = 'NORM
                     </button>
 
                     <button
+                        disabled={loading}
                         onClick={() => handleStatusChange("IN_PROGRESS")}
                         className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-[var(--bg-hover)] flex items-center gap-2 transition-colors"
                     >
@@ -77,6 +79,7 @@ export function ReportActions({ reportId, currentStatus, currentPriority = 'NORM
                     </button>
 
                     <button
+                        disabled={loading}
                         onClick={() => handleStatusChange("RESOLVED")}
                         className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-[var(--bg-hover)] flex items-center gap-2 transition-colors"
                     >
@@ -91,6 +94,7 @@ export function ReportActions({ reportId, currentStatus, currentPriority = 'NORM
                     </div>
 
                     <button
+                        disabled={loading}
                         onClick={() => handlePriorityChange("URGENT")}
                         className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-[var(--bg-hover)] flex items-center gap-2 transition-colors"
                     >
@@ -99,6 +103,7 @@ export function ReportActions({ reportId, currentStatus, currentPriority = 'NORM
                     </button>
 
                     <button
+                        disabled={loading}
                         onClick={() => handlePriorityChange("HIGH")}
                         className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-[var(--bg-hover)] flex items-center gap-2 transition-colors"
                     >

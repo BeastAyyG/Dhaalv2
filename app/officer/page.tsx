@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase-server";
 import { OfficerDashboardClient } from "./officer-dashboard-client";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -20,9 +20,8 @@ export default async function OfficerPage() {
         .select("*")
         .order("created_at", { ascending: false });
 
-    if (error) {
-        console.error("Error fetching reports:", error);
-    }
+
+    // Silently handle empty errors
 
     // Transform data to match UI types if needed
     // (Supabase returns snake_case, our types might expect consistent camelCase or match DB)

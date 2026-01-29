@@ -41,13 +41,27 @@ function MapController({ center }: { center: [number, number] }) {
     return null;
 }
 
+// Force map resize when visibility changes
+function MapInvalidator({ isVisible }: { isVisible?: boolean }) {
+    const map = useMap();
+    useEffect(() => {
+        if (isVisible) {
+            setTimeout(() => map.invalidateSize(), 150); // slight delay for animation
+        }
+        // Always resizing on mount helps too
+        map.invalidateSize();
+    }, [map, isVisible]);
+    return null;
+}
+
 interface MapViewProps {
     reports: Report[];
     center: [number, number];
     onMarkerClick?: (report: Report) => void;
+    isVisible?: boolean; // New prop
 }
 
-export default function MapView({ reports, center, onMarkerClick }: MapViewProps) {
+export default function MapView({ reports, center, onMarkerClick, isVisible = true }: MapViewProps) {
     return (
         <div className="h-full w-full relative z-0">
             <MapContainer
@@ -57,10 +71,11 @@ export default function MapView({ reports, center, onMarkerClick }: MapViewProps
                 className="h-full w-full"
             >
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                 />
                 <MapController center={center} />
+                <MapInvalidator isVisible={isVisible} />
 
                 {reports.map((report) => (
                     <Marker

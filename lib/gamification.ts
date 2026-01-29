@@ -1,4 +1,4 @@
-import { Badge, Level } from "./types";
+import { Level } from "./types";
 import { Camera, Star, Shield, Trophy, TrendingUp, CheckCircle, Award } from "lucide-react";
 
 export const LEVELS: Level[] = [

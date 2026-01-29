@@ -38,12 +38,16 @@ export type AnalysisResult = {
     category: string;
     severityScore: number;
     description: string;
+    priority?: 'CRITICAL' | 'HIGH' | 'NORMAL' | 'LOW';
+    isEmergency?: boolean;
 };
+
+import { type LucideIcon } from "lucide-react";
 
 export type Badge = {
     id: string;
     name: string;
-    icon: any; // Lucide icon
+    icon: LucideIcon; // Lucide icon
     description: string;
     earned: boolean;
 };

@@ -1,133 +1,115 @@
 "use client";
 
-import { SeverityBadge, StatusBadge } from "@/components/ui/badges";
-import { MapPin, Clock, ThumbsUp, MessageCircle, Share2 } from "lucide-react";
+import Link from "next/link";
+import { MapPin, Clock } from "lucide-react";
 import type { Report } from "@/lib/types";
+import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { UpvoteButton, ShareButton } from "@/components/feed/social-actions";
 
 interface ReportCardProps {
     report: Report;
-    onLocate?: (report: Report) => void;
+    onLocate: () => void;
 }
 
 export function ReportCard({ report, onLocate }: ReportCardProps) {
-    const [upvotes, setUpvotes] = useState(report.upvotes || 0);
-    const [hasUpvoted, setHasUpvoted] = useState(false);
-
-    const handleUpvote = () => {
-        setUpvotes(hasUpvoted ? upvotes - 1 : upvotes + 1);
-        setHasUpvoted(!hasUpvoted);
-    };
-
-    const timeAgo = (date: string) => {
-        const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-        if (seconds < 60) return "just now";
-        if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-        return `${Math.floor(seconds / 86400)}d ago`;
+    const timeAgo = (dateStr: string) => {
+        try {
+            return formatDistanceToNow(new Date(dateStr), { addSuffix: true });
+        } catch {
+            return "recently";
+        }
     };
 
     return (
-        <article className="glass-card-interactive overflow-hidden">
-            {/* Image */}
-            {report.image_url && (
-                <div className="relative h-44 -mx-4 -mt-4 overflow-hidden">
-                    <img
-                        src={report.image_url}
-                        alt={`${report.category} issue reported`}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-pure)] via-transparent to-transparent" />
+        <article className="group relative">
+            {/* Glass Card Background */}
+            <div className="absolute inset-x-0 bottom-0 top-4 bg-[var(--bg-surface)]/80 backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl shadow-sm transition-all group-hover:shadow-[var(--brand)]/10 group-hover:border-[var(--brand)]/30"></div>
 
-                    {/* Overlay Badges */}
-                    <div className="absolute top-3 left-3 flex items-center gap-2">
-                        <SeverityBadge severity={report.severity} size="sm" />
-                    </div>
-                    <div className="absolute top-3 right-3">
-                        <StatusBadge status={report.status as "OPEN" | "IN_PROGRESS" | "RESOLVED"} size="sm" />
-                    </div>
+            <div className="relative flex gap-4 p-4 pl-5">
+                {/* Severity Indicator Line */}
+                <div className={cn(
+                    "absolute left-0 top-8 bottom-8 w-1 rounded-r-full",
+                    report.severity >= 8 ? "bg-[#EF4444] shadow-[0_0_10px_#EF4444]" :
+                        report.severity >= 5 ? "bg-[#F97316]" :
+                            "bg-[#22C55E]"
+                )} />
 
-                    {/* Category */}
-                    <div className="absolute bottom-3 left-3">
-                        <h3 className="text-white font-semibold text-lg drop-shadow-lg">{report.category}</h3>
-                    </div>
-                </div>
-            )}
-
-            {/* Content */}
-            <div className="space-y-3 pt-2">
-                {/* No image header */}
-                {!report.image_url && (
-                    <header className="flex items-start justify-between gap-2">
-                        <h3 className="font-semibold text-lg text-[var(--text-primary)]">{report.category}</h3>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                            <SeverityBadge severity={report.severity} size="sm" />
-                            <StatusBadge status={report.status as "OPEN" | "IN_PROGRESS" | "RESOLVED"} size="sm" />
-                        </div>
-                    </header>
-                )}
-
-                {/* Description */}
-                <p className="text-sm text-[var(--text-muted)] line-clamp-2">
-                    {report.description}
-                </p>
-
-                {/* Meta */}
-                <div className="flex items-center gap-4 text-xs text-[var(--text-subtle)]">
-                    <button
-                        onClick={() => onLocate?.(report)}
-                        className="flex items-center gap-1.5 hover:text-[var(--brand-light)] transition-colors cursor-pointer"
-                        aria-label="View this report on the map"
-                    >
-                        <MapPin className="w-3.5 h-3.5" aria-hidden="true" />
-                        <span>Map</span>
-                    </button>
-                    <time
-                        className="flex items-center gap-1.5"
-                        dateTime={report.created_at}
-                    >
-                        <Clock className="w-3.5 h-3.5" aria-hidden="true" />
-                        {timeAgo(report.created_at)}
-                    </time>
-                </div>
-
-                {/* Divider */}
-                <hr className="border-[var(--glass-border)]" />
-
-                {/* Actions */}
-                <footer className="flex items-center justify-between">
-                    <button
-                        onClick={handleUpvote}
-                        className={cn(
-                            "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-colors",
-                            hasUpvoted
-                                ? "bg-[var(--info-bg)] text-[var(--info)]"
-                                : "hover:bg-[var(--bg-hover)] text-[var(--text-muted)]"
+                {/* Thumbnail */}
+                <div className="shrink-0 pt-2">
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 border border-[var(--glass-border)]">
+                        <img
+                            src={report.image_url || "/placeholder.svg"}
+                            alt={report.category}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            loading="lazy"
+                        />
+                        {report.status === "RESOLVED" && (
+                            <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center backdrop-blur-[1px]">
+                                <span className="text-[10px] font-bold bg-green-500 text-white px-1.5 py-0.5 rounded-full shadow-lg">FIXED</span>
+                            </div>
                         )}
-                        aria-pressed={hasUpvoted}
-                        aria-label={`Upvote this report. Current upvotes: ${upvotes}`}
-                    >
-                        <ThumbsUp className={cn("w-4 h-4", hasUpvoted && "fill-current")} aria-hidden="true" />
-                        <span className="font-mono">{upvotes}</span>
-                    </button>
-
-                    <div className="flex items-center gap-1">
-                        <button
-                            className="btn-icon"
-                            aria-label="Comment on this report"
-                        >
-                            <MessageCircle className="w-4 h-4" aria-hidden="true" />
-                        </button>
-                        <button
-                            className="btn-icon"
-                            aria-label="Share this report"
-                        >
-                            <Share2 className="w-4 h-4" aria-hidden="true" />
-                        </button>
                     </div>
-                </footer>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0 pt-1">
+                    <div className="flex justify-between items-start mb-1">
+                        <Link href={`/report/${report.id}`} className="group-hover:text-[var(--brand)] transition-colors">
+                            <h3 className="font-semibold text-[var(--text-primary)] truncate pr-2">
+                                {report.category}
+                            </h3>
+                        </Link>
+                        <span className={cn(
+                            "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider",
+                            report.status === "OPEN" && "bg-orange-500/10 text-orange-500 border border-orange-500/20",
+                            report.status === "IN_PROGRESS" && "bg-blue-500/10 text-blue-500 border border-blue-500/20",
+                            report.status === "RESOLVED" && "bg-green-500/10 text-green-500 border border-green-500/20"
+                        )}>
+                            {report.status.replace("_", " ")}
+                        </span>
+                    </div>
+
+                    <p className="text-sm text-[var(--text-secondary)] line-clamp-2 mb-3">
+                        {report.description}
+                    </p>
+
+                    {/* Metadata */}
+                    <div className="flex items-center gap-4 text-xs text-[var(--text-muted)] mb-3">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onLocate();
+                            }}
+                            className="flex items-center gap-1.5 hover:text-[var(--brand)] transition-colors"
+                            aria-label="View this report on the map"
+                        >
+                            <MapPin className="w-3.5 h-3.5" aria-hidden="true" />
+                            <span>Map</span>
+                        </button>
+                        <time
+                            className="flex items-center gap-1.5"
+                            dateTime={report.created_at}
+                        >
+                            <Clock className="w-3.5 h-3.5" aria-hidden="true" />
+                            {timeAgo(report.created_at)}
+                        </time>
+                    </div>
+
+                    {/* Divider */}
+                    <hr className="border-[var(--glass-border)] mb-3" />
+
+                    {/* Actions */}
+                    <footer className="flex items-center justify-between">
+                        <UpvoteButton count={report.upvotes || 0} reportId={report.id} />
+
+                        <ShareButton
+                            reportId={report.id}
+                            category={report.category}
+                            description={report.description}
+                        />
+                    </footer>
+                </div>
             </div>
         </article>
     );

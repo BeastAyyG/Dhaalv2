@@ -14,14 +14,14 @@ export async function checkConnection() {
     }
 
     try {
-        const { data, error } = await supabase.from("reports").select("count").limit(1);
+        const { error } = await supabase.from("reports").select("count").limit(1);
 
         if (error) {
             return { success: false, message: `Connection Failed: ${error.message}` };
         }
 
         return { success: true, message: "✅ Connected to Supabase! Reports table found." };
-    } catch (err) {
+    } catch {
         return { success: false, message: "Unknown error during connection check" };
     }
 }
