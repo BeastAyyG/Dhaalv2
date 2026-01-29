@@ -17,7 +17,7 @@
 **Hackathon:** [Hackathon Name]
 **Problem Domain:** Smart Cities & Civic Grievance Redressal
 
-**GitHub Repository:** `https://github.com/500ka/Dhaal`
+**GitHub Repository:** `https://github.com/BeastAyyG/Dhaalv2`
 
 ---
 
@@ -31,7 +31,7 @@ Citizen grievance reporting is currently **fragmented, slow, and unresponsive**.
 - **Gaps:** Existing apps lack **real-time verification**, **multi-lingual support**, and **automated severity filtering**.
 - **Our Goal:** To democratize civic reporting using AI, making it accessible even to those who cannot type, through Voice and WhatsApp.
 
-**GitHub Repository:** `https://github.com/500ka/Dhaal`
+**GitHub Repository:** `https://github.com/BeastAyyG/Dhaalv2`
 
 ---
 
@@ -47,7 +47,7 @@ Dhaal is a **hyper-local, AI-first civic engagement platform** that bridges the 
 4.  **💬 WhatsApp Integration:** Report issues directly via familiar chat interfaces.
 5.  **🛡️ Community Defense:** Upvoting and verification to filter spam.
 
-**GitHub Repository:** `https://github.com/500ka/Dhaal`
+**GitHub Repository:** `https://github.com/BeastAyyG/Dhaalv2`
 
 ---
 
@@ -66,7 +66,7 @@ User (Voice/Image) ➡️ **Frontend** ➡️ **Gemini AI** (Analyze) ➡️ **S
 1.  Image Upload -> AI Extracts Data -> Auto-fill Form.
 2.  Voice Command -> Speech-to-Text -> Intent Detection -> Form.
 
-**GitHub Repository:** `https://github.com/500ka/Dhaal`
+**GitHub Repository:** `https://github.com/BeastAyyG/Dhaalv2`
 
 ---
 
@@ -84,7 +84,7 @@ A fully functional **PWA (Progressive Web App)** with:
 - *[Insert Screenshot 2: Map View with Severity Markers]*
 - *[Insert Screenshot 3: WhatsApp Report Button]*
 
-**GitHub Repository:** `https://github.com/500ka/Dhaal`
+**GitHub Repository:** `https://github.com/BeastAyyG/Dhaalv2`
 
 ---
 

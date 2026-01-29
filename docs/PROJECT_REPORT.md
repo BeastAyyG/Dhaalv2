@@ -1,6 +1,6 @@
 # Dhaal (Civic Shield): Project Report
 
-**GitHub Repository:** `https://github.com/500ka/Dhaal`
+**GitHub Repository:** `https://github.com/BeastAyyG/Dhaalv2`
 
 ---
 

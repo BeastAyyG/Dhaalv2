@@ -57,8 +57,8 @@ Dhaal is a next-generation civic grievance redressal platform. It empowers citiz
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/500ka/Dhaal.git
-    cd Dhaal/web
+    git clone https://github.com/BeastAyyG/Dhaalv2.git
+    cd Dhaalv2/web
     ```
 
 2.  **Install dependencies**
