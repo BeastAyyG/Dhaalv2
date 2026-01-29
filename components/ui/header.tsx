@@ -24,7 +24,7 @@ export function Header() {
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
-            <nav className="glass-card-static mx-auto max-w-7xl bg-[var(--bg-surface)]/95 shadow-lg" role="navigation" aria-label="Main navigation">
+            <nav className="glass-card-static mx-auto max-w-7xl shadow-lg" role="navigation" aria-label="Main navigation">
                 <div className="flex items-center justify-between h-14 px-2">
                     {/* Logo */}
                     <Link

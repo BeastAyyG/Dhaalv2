@@ -24,8 +24,7 @@ export default async function Home() {
     const response = await supabase
       .from("reports")
       .select("*")
-      .order("created_at", { ascending: false })
-      .limit(5);
+      .order("created_at", { ascending: false });
     reports = response.data;
     error = response.error;
     error = response.error;

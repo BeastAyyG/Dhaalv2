@@ -37,13 +37,20 @@ export function ReportCard({ report, onLocate }: ReportCardProps) {
 
                 {/* Thumbnail */}
                 <div className="shrink-0 pt-2">
-                    <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 border border-[var(--glass-border)]">
-                        <img
-                            src={report.image_url || "/placeholder.svg"}
-                            alt={report.category}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            loading="lazy"
-                        />
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 border border-[var(--glass-border)] flex items-center justify-center">
+                        {report.image_url ? (
+                            <img
+                                src={report.image_url}
+                                alt={report.category}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                loading="lazy"
+                            />
+                        ) : (
+                            <div className="text-neutral-400">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src="/logo.png" className="w-8 h-8 opacity-40 grayscale" alt="No Photo" />
+                            </div>
+                        )}
                         {report.status === "RESOLVED" && (
                             <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center backdrop-blur-[1px]">
                                 <span className="text-[10px] font-bold bg-green-500 text-white px-1.5 py-0.5 rounded-full shadow-lg">FIXED</span>
