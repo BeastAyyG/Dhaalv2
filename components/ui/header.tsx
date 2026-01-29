@@ -32,8 +32,9 @@ export function Header() {
                         className="flex items-center gap-3 group"
                         aria-label="Dhaal - Home"
                     >
-                        <div className="w-9 h-9 rounded-lg bg-[var(--gradient-brand)] flex items-center justify-center shadow-lg">
-                            <Shield className="w-5 h-5 text-white" aria-hidden="true" />
+                        <div className="relative w-9 h-9">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src="/logo.png" alt="Dhaal Logo" className="w-full h-full object-contain" />
                         </div>
                         <div className="hidden sm:block">
                             <span className="font-semibold text-lg text-[var(--text-primary)]">Dhaal</span>

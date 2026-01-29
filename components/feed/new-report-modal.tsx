@@ -124,6 +124,21 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
     };
 
 
+    const CATEGORIES = ["Fire / Explosion", "Gas Leak", "Accident", "Pothole", "Water Issue", "Garbage", "Street Light", "Traffic", "Violence", "Other"];
+
+    const handleSkipPhoto = () => {
+        setImageFile(null);
+        setImagePreview(null);
+        // Default analysis for manual entry
+        setAnalysis({
+            category: "Other",
+            severityScore: 5,
+            description: "",
+            isEmergency: false
+        });
+        setStep("details");
+    };
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
             <div className="bg-white dark:bg-neutral-900 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl">
@@ -149,6 +164,16 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                     onChange={handleFileChange}
                                 />
                             </label>
+
+                            <div className="flex flex-col items-center gap-2 pt-2">
+                                <span className="text-xs text-neutral-400 font-medium">OR</span>
+                                <button
+                                    onClick={handleSkipPhoto}
+                                    className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                                >
+                                    Report without photo (e.g. Gas Leak, Fire)
+                                </button>
+                            </div>
                         </div>
                     )}
 
@@ -225,19 +250,51 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
 
                     {step === "details" && analysis && (
                         <div className="space-y-4">
-                            <div className="relative h-48 w-full rounded-lg overflow-hidden">
-                                {imagePreview && (
-                                    // eslint-disable-next-line @next/next/no-img-element
+                            {imagePreview ? (
+                                <div className="relative h-48 w-full rounded-lg overflow-hidden">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img src={imagePreview} alt="Preview" className="object-cover w-full h-full" />
-                                )}
-                                <div className={cn(
-                                    "absolute bottom-2 left-2 text-white text-xs px-2 py-1 rounded-md font-bold shadow-sm",
-                                    analysis.severityScore > 7 ? "bg-red-500" : "bg-green-500"
-                                )}>
-                                    Detected: {analysis.category} (Severity: {analysis.severityScore}/10)
+                                    <div className={cn(
+                                        "absolute bottom-2 left-2 text-white text-xs px-2 py-1 rounded-md font-bold shadow-sm",
+                                        analysis.severityScore > 7 ? "bg-red-500" : "bg-green-500"
+                                    )}>
+                                        Detected: {analysis.category} (Severity: {analysis.severityScore}/10)
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="space-y-3 p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-xl border border-neutral-100 dark:border-neutral-800">
+                                    <div>
+                                        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-2">Category</label>
+                                        <select
+                                            value={analysis.category}
+                                            onChange={(e) => setAnalysis({ ...analysis, category: e.target.value })}
+                                            className="w-full p-2.5 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none"
+                                        >
+                                            {CATEGORIES.map(cat => (
+                                                <option key={cat} value={cat}>{cat}</option>
+                                            ))}
+                                        </select>
+                                    </div>
 
+                                    <div>
+                                        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-2">
+                                            Severity ({analysis.severityScore}/10)
+                                        </label>
+                                        <input
+                                            type="range"
+                                            min="1"
+                                            max="10"
+                                            value={analysis.severityScore}
+                                            onChange={(e) => setAnalysis({ ...analysis, severityScore: parseInt(e.target.value) })}
+                                            className="w-full accent-blue-600 cursor-pointer"
+                                        />
+                                        <div className="flex justify-between text-xs text-neutral-400 mt-1">
+                                            <span>Low</span>
+                                            <span>Critical</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             <div>
                                 <label className="block text-sm font-medium mb-1">Description</label>
@@ -279,16 +336,22 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                             <button
                                 disabled={isSubmitting}
                                 onClick={async () => {
-                                    if (!imageFile || !location) return;
+                                    if (!location) {
+                                        alert("Location is required. Please enable GPS.");
+                                        return;
+                                    }
                                     setIsSubmitting(true);
 
                                     const formData = new FormData();
                                     formData.append("category", analysis.category);
                                     formData.append("severity", analysis.severityScore.toString());
+                                    // Use state value instead of querySelector
                                     formData.append("description", analysis.description);
                                     formData.append("lat", location.lat.toString());
                                     formData.append("lng", location.lng.toString());
-                                    formData.append("image", imageFile);
+                                    if (imageFile) {
+                                        formData.append("image", imageFile);
+                                    }
                                     // Attach User ID for Auth/Mock Auth
                                     if (user?.id) {
                                         formData.append("user_id", user.id);
