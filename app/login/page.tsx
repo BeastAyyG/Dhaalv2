@@ -44,7 +44,7 @@ export default function LoginPage() {
 
     const handleAadhaarSubmit = async () => {
         if (!isValidAadhaar(aadhaar)) {
-            setError("Please enter a valid 12-digit Aadhaar number");
+            setError(`Invalid Aadhaar: Received ${aadhaar.length} digits, expected 12.`);
             return;
         }
         setError("");
@@ -167,7 +167,7 @@ export default function LoginPage() {
                             <input
                                 type="text"
                                 value={formatAadhaar(aadhaar)}
-                                onChange={(e) => setAadhaar(e.target.value.replace(/\D/g, ""))}
+                                onChange={(e) => setAadhaar(e.target.value.replace(/\D/g, "").slice(0, 12))}
                                 placeholder="XXXX-XXXX-XXXX"
                                 className="w-full px-4 py-4 rounded-xl bg-[var(--bg-elevated)] border border-[var(--glass-border)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20 outline-none text-center text-xl tracking-widest font-mono text-[var(--text-primary)] mb-4"
                                 maxLength={14}
