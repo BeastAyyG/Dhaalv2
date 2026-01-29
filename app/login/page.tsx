@@ -32,7 +32,7 @@ export default function LoginPage() {
     // Validate Aadhaar (basic Verhoeff check simulation)
     const isValidAadhaar = (aadhaar: string) => {
         const digits = aadhaar.replace(/\D/g, "");
-        return digits.length === 12 && !digits.startsWith("0") && !digits.startsWith("1");
+        return digits.length === 12;
     };
 
     // Generate mock masked mobile from Aadhaar
