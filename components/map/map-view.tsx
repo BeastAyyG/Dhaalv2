@@ -10,22 +10,22 @@ import L from "leaflet";
 const createColoredIcon = (color: string) => {
     const svgIcon = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
-      <path fill="${color}" stroke="#333" stroke-width="1" d="M12 0C5.4 0 0 5.4 0 12c0 7.2 12 24 12 24s12-16.8 12-24c0-6.6-5.4-12-12-12z"/>
+      <path fill="${color}" stroke="#FFFFFF" stroke-width="2" d="M12 0C5.4 0 0 5.4 0 12c0 7.2 12 24 12 24s12-16.8 12-24c0-6.6-5.4-12-12-12z"/>
       <circle fill="white" cx="12" cy="12" r="5"/>
     </svg>
   `;
     return new L.Icon({
         iconUrl: `data:image/svg+xml;base64,${btoa(svgIcon)}`,
-        iconSize: [24, 36],
-        iconAnchor: [12, 36],
-        popupAnchor: [0, -36],
+        iconSize: [28, 42], // Slightly larger for touch targets
+        iconAnchor: [14, 42],
+        popupAnchor: [0, -42],
     });
 };
 
-// Pre-create icons for performance
-const redIcon = createColoredIcon("#EF4444");    // High severity (7-10)
-const orangeIcon = createColoredIcon("#F97316"); // Medium severity (4-6)
-const greenIcon = createColoredIcon("#22C55E");  // Low severity (1-3)
+// Pre-create icons for performance (Civic Brutalism Palette)
+const redIcon = createColoredIcon("#DC2626");    // High severity (7-10) - Signal Red
+const orangeIcon = createColoredIcon("#F59E0B"); // Medium severity (4-6) - Trust Gold
+const greenIcon = createColoredIcon("#10B981");  // Low severity (1-3) - Resolution Green
 
 const getIconBySeverity = (severity: number) => {
     if (severity >= 7) return redIcon;

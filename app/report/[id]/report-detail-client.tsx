@@ -45,7 +45,7 @@ export default function ReportDetailClient({ report, initialComments }: ReportDe
         setIsSubmitting(false);
     };
 
-    const severityColor = report.severity > 7 ? "text-red-500" : report.severity > 4 ? "text-amber-500" : "text-green-500";
+    const severityColor = report.severity > 7 ? "text-[var(--brand)]" : report.severity > 4 ? "text-[var(--warning)]" : "text-[var(--success)]";
     const statusColor = {
         OPEN: "bg-amber-100 text-amber-700",
         IN_PROGRESS: "bg-blue-100 text-blue-700",
@@ -151,7 +151,7 @@ export default function ReportDetailClient({ report, initialComments }: ReportDe
                                 placeholder="Your name (optional)"
                                 value={userName}
                                 onChange={(e) => setUserName(e.target.value)}
-                                className="w-full px-4 py-2 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-4 py-2 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 focus:ring-2 focus:ring-[var(--brand)] outline-none"
                             />
                         </div>
                         <div className="flex gap-2">
@@ -161,12 +161,12 @@ export default function ReportDetailClient({ report, initialComments }: ReportDe
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && handleSubmitComment()}
-                                className="flex-1 px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="flex-1 px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 focus:ring-2 focus:ring-[var(--brand)] outline-none"
                             />
                             <button
                                 onClick={handleSubmitComment}
                                 disabled={isSubmitting || !newComment.trim()}
-                                className="px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl transition-colors"
+                                className="px-4 py-3 bg-[var(--brand)] hover:opacity-90 disabled:opacity-50 text-white rounded-xl transition-colors"
                             >
                                 <Send className="w-5 h-5" />
                             </button>

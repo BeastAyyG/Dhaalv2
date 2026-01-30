@@ -1,0 +1,35 @@
+{
+    "name": "Dhaal - Civic Shield",
+    "short_name": "Dhaal",
+    "description": "AI-Powered Civic Reporting & Response System",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0f172a",
+    "theme_color": "#ef4444",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/logo.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Report Issue",
+            "url": "/?action=report",
+            "icons": [
+                {
+                    "src": "/logo.png",
+                    "sizes": "96x96",
+                    "type": "image/png"
+                }
+            ]
+        }
+    ]
+}

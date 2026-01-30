@@ -169,7 +169,7 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                 <span className="text-xs text-neutral-400 font-medium">OR</span>
                                 <button
                                     onClick={handleSkipPhoto}
-                                    className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                                    className="text-sm font-medium text-[var(--brand)] hover:text-red-700 hover:underline px-4 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                                 >
                                     Report without photo (e.g. Gas Leak, Fire)
                                 </button>
@@ -180,10 +180,10 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                     {step === "analyzing" && (
                         <div className="h-64 flex flex-col items-center justify-center space-y-4">
                             <div className="relative w-20 h-20">
-                                <div className="absolute inset-0 border-4 border-blue-200 rounded-full animate-pulse"></div>
-                                <div className="absolute inset-2 border-4 border-blue-500 rounded-full animate-spin border-t-transparent"></div>
+                                <div className="absolute inset-0 border-4 border-red-200/20 rounded-full animate-pulse"></div>
+                                <div className="absolute inset-2 border-4 border-[var(--brand)] rounded-full animate-spin border-t-transparent"></div>
                             </div>
-                            <p className="text-sm font-medium text-blue-600 animate-pulse">AI is analyzing scene...</p>
+                            <p className="text-sm font-medium text-[var(--brand)] animate-pulse">AI is analyzing scene...</p>
                         </div>
                     )}
 
@@ -268,7 +268,7 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                         <select
                                             value={analysis.category}
                                             onChange={(e) => setAnalysis({ ...analysis, category: e.target.value })}
-                                            className="w-full p-2.5 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none"
+                                            className="w-full p-2.5 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm font-medium focus:ring-2 focus:ring-[var(--brand)] outline-none"
                                         >
                                             {CATEGORIES.map(cat => (
                                                 <option key={cat} value={cat}>{cat}</option>
@@ -286,7 +286,7 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                                             max="10"
                                             value={analysis.severityScore}
                                             onChange={(e) => setAnalysis({ ...analysis, severityScore: parseInt(e.target.value) })}
-                                            className="w-full accent-blue-600 cursor-pointer"
+                                            className="w-full accent-[var(--brand)] cursor-pointer"
                                         />
                                         <div className="flex justify-between text-xs text-neutral-400 mt-1">
                                             <span>Low</span>
@@ -299,7 +299,7 @@ export function NewReportModal({ isOpen, onClose }: NewReportModalProps) {
                             <div>
                                 <label className="block text-sm font-medium mb-1">Description</label>
                                 <textarea
-                                    className="w-full p-3 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 focus:ring-2 focus:ring-blue-500 outline-none resize-none mb-3"
+                                    className="w-full p-3 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 focus:ring-2 focus:ring-[var(--brand)] outline-none resize-none mb-3"
                                     rows={3}
                                     value={analysis.description}
                                     onChange={(e) => setAnalysis({ ...analysis, description: e.target.value })}

@@ -28,11 +28,12 @@ export function ReportCard({ report, onLocate }: ReportCardProps) {
 
             <div className="relative flex gap-4 p-4 pl-5">
                 {/* Severity Indicator Line */}
+                {/* Severity Indicator Line */}
                 <div className={cn(
                     "absolute left-0 top-8 bottom-8 w-1 rounded-r-full",
-                    report.severity >= 8 ? "bg-[#EF4444] shadow-[0_0_10px_#EF4444]" :
-                        report.severity >= 5 ? "bg-[#F97316]" :
-                            "bg-[#22C55E]"
+                    report.severity >= 8 ? "bg-[var(--brand)] shadow-[0_0_10px_var(--brand)]" :
+                        report.severity >= 5 ? "bg-[var(--warning)]" :
+                            "bg-[var(--success)]"
                 )} />
 
                 {/* Thumbnail */}

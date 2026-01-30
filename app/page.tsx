@@ -9,36 +9,32 @@ export const dynamic = "force-dynamic";
 const MOCK_MODE = false; // Supabase integration enabled
 
 export default async function Home() {
-  // Skip DB during outage
+  // Skip DB during outage/maintenance if flag is on
   if (MOCK_MODE) {
-    console.log("🔧 MOCK MODE: Skipping Supabase, using empty data");
     return <ClientHome reports={[]} />;
   }
 
-  // Fetch Real Data from Supabase if available
+  // Fetch Real Data from Supabase
   const supabase = createClient();
-  let reports = null;
-  let error = null;
+  let reports: Report[] = [];
 
   if (supabase) {
-    // Limit to 5 to prevent timeout from large base64 images
-    const response = await supabase
-      .from("reports")
-      .select("*")
-      .order("created_at", { ascending: false });
-    reports = response.data;
-    error = response.error;
-    error = response.error;
-    console.log("Fetched reports:", reports?.length || 0, "Error:", error?.message || "none");
-  } else {
-    console.warn("Supabase is not configured. Using empty list.");
+    try {
+      const { data, error } = await supabase
+        .from("reports")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(50); // Reasonable limit for initial load
+
+      if (error) {
+        console.error("Error fetching reports:", error.message);
+      } else if (data) {
+        reports = data as Report[];
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    }
   }
 
-  // Silently handle errors - app still works with empty array fallback
-
-  // Cast and handle null data
-  // Since we haven't set up the table yet, this might return null or error, so fallback to empty array
-  const safeReports = (reports || []) as Report[];
-
-  return <ClientHome reports={safeReports} />;
+  return <ClientHome reports={reports} />;
 }
