@@ -1,7 +1,12 @@
 -- Officer Schema Migration: 20240131_officer_schema.sql
 
--- 1. Create Role Enum
-create type user_role as enum ('citizen', 'official', 'admin');
+-- 1. Create Role Enum (Idempotent)
+do $$ 
+begin
+  if not exists (select 1 from pg_type where typname = 'user_role') then
+    create type user_role as enum ('citizen', 'official', 'admin');
+  end if;
+end $$;
 
 -- 2. Add Role to Users Table
 alter table users add column if not exists role user_role default 'citizen';
