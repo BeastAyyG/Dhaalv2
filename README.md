@@ -16,6 +16,7 @@ Dhaal is a next-generation civic grievance redressal platform. It empowers citiz
 - **📍 Real-Time Map:** Interactive heatmap showing active reports with severity-coded markers.
 - **💬 WhatsApp Integration:** Floating action button for instant reporting via WhatsApp.
 - **🛡️ Community Defense:** Gamification system where users earn "Karma Points" for verified reports. Upvoting system for community validation.
+- **👮 Officials Console:** Dedicated workspace for government officials to claim reports, post updates, and resolve issues with geospatial filtering.
 - **🌓 Dark Mode UI:** Premium, glassmorphism-inspired design optimized for modern devices.
 
 ---
