@@ -16,7 +16,7 @@ export default function LoginPage() {
     const [error, setError] = useState("");
     const [maskedMobile, setMaskedMobile] = useState("");
 
-    const { signInWithOTP, verifyOTP, setMockUser } = useAuth();
+    const { signInWithOTP, verifyOTP } = useAuth();
     const router = useRouter();
 
     // Format Aadhaar as XXXX-XXXX-XXXX
@@ -56,22 +56,25 @@ export default function LoginPage() {
         setLoading(true);
         setError("");
 
-        // Simulate API call to Aadhaar gateway
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Aadhaar format check (only allow digits 0-9)
+        const phone = `+91${aadhaar.replace(/\D/g, "")}`;
 
-        // For demo: Use a mock phone number based on Aadhaar
-        const mockPhone = `+91${aadhaar.replace(/\D/g, "").slice(0, 10)}`;
+        if (phone.length !== 13) {
+            setError("Invalid Aadhaar or Phone mapping (Demo: First 10 digits used)");
+            setLoading(false);
+            return;
+        }
 
         try {
-            const { error } = await signInWithOTP(mockPhone);
+            const { error } = await signInWithOTP(phone);
             if (error) {
-                // For demo, proceed anyway
-                console.log("Demo mode: OTP simulation");
+                console.error(error);
+                setError(error.message);
+            } else {
+                setStep("otp");
             }
-            setStep("otp");
-        } catch {
-            // Demo mode: proceed anyway
-            setStep("otp");
+        } catch (err: any) {
+            setError(err.message || "Failed to send OTP");
         }
         setLoading(false);
     };
@@ -85,28 +88,22 @@ export default function LoginPage() {
         setLoading(true);
         setError("");
 
-        // Simulate verification
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        // For demo: Accept any 6-digit OTP
-        const mockPhone = `+91${aadhaar.replace(/\D/g, "").slice(0, 10)}`;
+        const phone = `+91${aadhaar.replace(/\D/g, "")}`;
 
         try {
-            const { error } = await verifyOTP(mockPhone, otp);
+            const { error } = await verifyOTP(phone, otp);
             if (error) {
-                // Demo mode: Use mock user instead
-                console.log("Demo mode: Using mock user");
-                setMockUser(aadhaar);
+                setError(error.message);
+                setLoading(false);
+                return;
             }
+
             setStep("success");
-            setTimeout(() => router.push("/"), 2000);
-        } catch {
-            // Demo mode: Use mock user
-            setMockUser(aadhaar);
-            setStep("success");
-            setTimeout(() => router.push("/"), 2000);
+            setTimeout(() => router.push("/"), 1500);
+        } catch (err: any) {
+            setError(err.message || "Verification failed");
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (

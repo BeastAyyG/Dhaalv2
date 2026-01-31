@@ -12,8 +12,83 @@ interface ReportDetailClientProps {
     initialComments: Comment[];
 }
 
+import { getPublicReportUpdates } from "@/app/actions/get-updates";
+import type { ReportUpdate } from "@/lib/types";
+import { useEffect } from "react";
+import { ShieldCheck, CheckCircle2, Clipboard } from "lucide-react";
+
+function OfficialUpdatesTimeline({ reportId }: { reportId: string }) {
+    const [updates, setUpdates] = useState<ReportUpdate[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUpdates = async () => {
+            const res = await getPublicReportUpdates(reportId);
+            if (res.success && res.data) {
+                setUpdates(res.data);
+            }
+            setLoading(false);
+        };
+        fetchUpdates();
+    }, [reportId]);
+
+    if (loading) return <div className="animate-pulse h-20 bg-neutral-100 rounded-2xl mb-6"></div>;
+    if (updates.length === 0) return null; // Hide if no updates
+
+    return (
+        <div className="bg-blue-50 dark:bg-slate-900/50 rounded-2xl p-5 shadow-sm border border-blue-100 dark:border-blue-900/30 mb-6">
+            <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-blue-900 dark:text-blue-100">
+                <ShieldCheck className="w-5 h-5 text-blue-600" />
+                Official Response
+            </h3>
+
+            <div className="relative border-l-2 border-blue-200 dark:border-blue-800 ml-3 space-y-6 pl-6 py-2">
+                {updates.map((update) => (
+                    <div key={update.id} className="relative">
+                        <span className={`absolute -left-[31px] top-0 h-4 w-4 rounded-full border-2 border-white dark:border-slate-900 ${update.type === 'resolution' ? 'bg-green-500' : 'bg-blue-500'
+                            }`} />
+
+                        <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                {update.officer_name || "Official"}
+                            </span>
+                            <span className="text-xs text-slate-400 font-mono">
+                                {new Date(update.created_at).toLocaleDateString()}
+                            </span>
+                        </div>
+
+                        <div className="bg-white dark:bg-slate-800 p-3 rounded-lg border border-blue-100 dark:border-slate-700 text-sm text-slate-600 dark:text-slate-300">
+                            <div className="flex items-center gap-2 mb-1">
+                                {update.type === 'resolution' ? (
+                                    <span className="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded uppercase">
+                                        Resolved
+                                    </span>
+                                ) : (
+                                    <span className="text-[10px] font-bold bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded uppercase">
+                                        Update
+                                    </span>
+                                )}
+                            </div>
+                            {update.description}
+
+                            {/* If image exists (future) */}
+                            {update.image_url && (
+                                <div className="mt-2 rounded overflow-hidden border border-slate-200">
+                                    <div className="bg-slate-100 p-8 text-center text-xs text-slate-400">
+                                        [ Evidence Photo ]
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export default function ReportDetailClient({ report, initialComments }: ReportDetailClientProps) {
-    const router = useRouter();
+    const router = useRouter(); // ... rest of the component
     const [comments, setComments] = useState<Comment[]>(initialComments);
     const [newComment, setNewComment] = useState("");
     const [userName, setUserName] = useState("");
@@ -117,12 +192,17 @@ export default function ReportDetailClient({ report, initialComments }: ReportDe
                     </div>
                 </div>
 
+                {/* Official Response Timeline - NEW SECTION */}
+                <OfficialUpdatesTimeline reportId={report.id} />
+
                 {/* Comments Section */}
                 <div className="bg-white dark:bg-neutral-900 rounded-2xl p-5 shadow-sm border border-neutral-100 dark:border-neutral-800">
-                    <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                        <MessageCircle className="w-5 h-5" />
-                        Comments ({comments.length})
-                    </h3>
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-lg flex items-center gap-2">
+                            <MessageCircle className="w-5 h-5" />
+                            Comments ({comments.length})
+                        </h3>
+                    </div>
 
                     {/* Comment List */}
                     <div className="space-y-4 mb-6">

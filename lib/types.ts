@@ -1,3 +1,5 @@
+export type UserRole = 'citizen' | 'official' | 'admin';
+
 export type User = {
     id: string;
     phone: string;
@@ -5,7 +7,8 @@ export type User = {
     xp: number; // Changed from points to match DB
     level: number;
     badges: string[];
-    is_officer?: boolean;
+    role: UserRole; // Added role
+    is_officer?: boolean; // Keep for backward compat, but prefer checkRole()
     avatar_url?: string;
     created_at?: string;
 };
@@ -34,6 +37,29 @@ export type Report = {
     date?: string; // Optional formatted date
 };
 
+export type ReportAssignment = {
+    id: string;
+    report_id: string;
+    officer_id: string;
+    assigned_at: string;
+    status: 'ACTIVE' | 'COMPLETED' | 'TRANSFERRED';
+};
+
+export type ReportUpdateType = 'progress' | 'resolution' | 'note';
+
+export type ReportUpdate = {
+    id: string;
+    report_id: string;
+    officer_id: string;
+    image_url?: string;
+    description?: string;
+    type: ReportUpdateType;
+    created_at: string;
+    // UI specific join fields
+    officer_name?: string;
+    officer_avatar?: string;
+};
+
 export type AnalysisResult = {
     category: string;
     severityScore: number;
@@ -56,4 +82,5 @@ export type Level = {
     level: number;
     name: string;
     minXp: number;
+    maxXp?: number; // Added optional max for progress calculation
 };
