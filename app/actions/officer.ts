@@ -149,7 +149,8 @@ export async function getMyAssignments() {
     if (error) return { error: error.message };
 
     // Flatten structure for easier UI consumption
-    const assignments = data.map((a: any) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const assignments = (data as any[]).map((a) => ({
         ...a.reports,
         assignment_id: a.id,
         assigned_at: a.assigned_at
