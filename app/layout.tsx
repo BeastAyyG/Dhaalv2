@@ -7,6 +7,8 @@ import { Header } from "@/components/ui/header";
 
 const inter = Inter({ subsets: ["latin"] });
 
+import { CURRENT_DOMAIN } from "@/lib/url-config";
+
 export const metadata: Metadata = {
   title: {
     default: "Dhaal - Civic Shield",
@@ -17,11 +19,11 @@ export const metadata: Metadata = {
   authors: [{ name: "Dhaal Team" }],
   keywords: ["civic", "reporting", "ai", "smart city", "emergency", "india"],
   manifest: "/manifest.json",
-  metadataBase: new URL("https://dhaal.vercel.app"),
+  metadataBase: new URL(CURRENT_DOMAIN),
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://dhaal.vercel.app",
+    url: CURRENT_DOMAIN,
     title: "Dhaal - AI Civic Reporting",
     description: "Report civic issues instantly with AI analysis and location tracking.",
     siteName: "Dhaal",

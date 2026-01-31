@@ -1,21 +1,25 @@
 "use server";
 
-import { genAI } from "@/lib/gemini";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export async function translateAction(text: string, targetLang: string = "English"): Promise<string> {
-    if (!text.trim()) return "";
+const apiKey = process.env.GEMINI_API_KEY!;
+const genAI = new GoogleGenerativeAI(apiKey);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+export async function translateAction(text: string): Promise<string> {
+    if (!text || !text.trim()) return "";
 
     try {
-        // Use a faster model without JSON enforcement for translation if possible, 
-        // but since lib/gemini exports a configured model, we'll create a new instance here for text.
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = `Translate the following Hindi text to English. If the text is already English, return it as is. strictly return ONLY the translated text, no preamble or quotes.
 
-        const prompt = `Translate the following text to ${targetLang}. Only return the translated text, nothing else. Text: "${text}"`;
+Text: "${text}"`;
+
         const result = await model.generateContent(prompt);
-        const response = result.response;
+        const response = await result.response;
         return response.text().trim();
     } catch (error) {
         console.error("Translation Error:", error);
-        return text; // Fallback to original
+        // Fallback: return original text if translation fails
+        return text;
     }
 }

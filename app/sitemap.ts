@@ -1,7 +1,8 @@
 import { MetadataRoute } from "next";
+import { CURRENT_DOMAIN } from "@/lib/url-config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = "https://dhaal.vercel.app";
+    const baseUrl = CURRENT_DOMAIN;
 
     return [
         {

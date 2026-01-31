@@ -42,6 +42,17 @@ export async function submitReportAction(
         return { success: true, message: "Report processed (Mock)" };
     }
 
+    // 0. Resolve User ID (Securely)
+    let finalUserId = userId;
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            finalUserId = user.id;
+        }
+    } catch (e) {
+        console.warn("Auth check failed, using provided ID or anonymous", e);
+    }
+
     if (imageFile && imageFile.size > 0) {
         // Generate unique filename
         const fileExt = imageFile.name.split('.').pop() || 'jpg';
@@ -78,7 +89,7 @@ export async function submitReportAction(
     const { error } = await supabase
         .from("reports")
         .insert({
-            user_id: userId,
+            user_id: finalUserId,
             category,
             description,
             severity,

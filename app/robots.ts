@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { CURRENT_DOMAIN } from "@/lib/url-config";
 
 export default function robots(): MetadataRoute.Robots {
     return {
@@ -7,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: "/",
             disallow: ["/officer/", "/profile/"],
         },
-        sitemap: "https://dhaal.vercel.app/sitemap.xml",
+        sitemap: `${CURRENT_DOMAIN}/sitemap.xml`,
     };
 }
